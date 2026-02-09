@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neo Fashion | Style Registry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --neon-gold: #fbbf24; --bg-dark: #050505; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: #f8fafc; margin: 0; overflow-x: hidden; }
+        .grid-bg { position: fixed; inset: 0; background-image: linear-gradient(rgba(251,191,36,0.02) 1px,transparent 1px), linear-gradient(90deg,rgba(251,191,36,0.02) 1px,transparent 1px); background-size: 50px 50px; z-index: -1; mask-image: radial-gradient(circle at center, black, transparent 90%); }
+        .marketplace-card { background: #0a0a0a; border-radius: 16px; border: 1px solid #1a1a1a; transition: 0.3s cubic-bezier(0.23, 1, 0.32, 1); overflow: hidden; display: flex; flex-direction: column; height: 100%; position: relative; }
+        .marketplace-card:hover { border-color: var(--neon-gold); transform: translateY(-3px); }
+        .price-priority-box { background: #fff; color: #000; font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 800; padding: 0.7rem 1rem; text-align: center; width: 100%; border-top: 1px solid var(--neon-gold); }
+        .official-nav { background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #1a1a1a; }
+        .qty-node { background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; border-top: 1px solid #1a1a1a; }
+        .qty-btn { padding: 10px 18px; transition: 0.2s; color: var(--neon-gold); font-weight: bold; cursor: pointer; }
+        .qty-btn:hover { background: var(--neon-gold); color: black; }
+        .nav-btn { background: rgba(255,255,255,0.05); color: #fff; padding: 8px 16px; border-radius: 8px; font-weight: bold; text-decoration: none; border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s; font-size: 11px; text-transform: uppercase; }
+        .nav-btn:hover { background: var(--neon-gold); color: #000; }
+        .size-chip { flex: 1; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 4px 0; border: 1px solid #222; color: #555; border-radius: 4px; cursor: pointer; }
+        .size-chip.active { border-color: var(--neon-gold); color: var(--neon-gold); background: rgba(251,191,36,0.05); }
+        .summary-panel { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 16px; padding: 24px; position: sticky; top: 110px; max-height: 80vh; display: flex; flex-direction: column; }
+        .benchmark-bar { height: 2px; background: #222; width: 100%; border-radius: 2px; margin-top: 4px; overflow: hidden; }
+        .benchmark-fill { height: 100%; background: var(--neon-gold); box-shadow: 0 0 10px var(--neon-gold); }
+    </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<nav class="official-nav flex items-center justify-between py-5 px-10 sticky top-0 z-50">
+    <div class="text-3xl font-black italic tracking-tighter" style="background: linear-gradient(to right, #ffffff, #fbbf24); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">NEO<span class="text-amber-400">FASHION</span></div>
+    
+    <div class="flex gap-6 items-center">
+        <div class="hidden md:flex flex-col items-end px-4 border-r border-white/10">
+            <span class="text-[8px] uppercase tracking-[0.3em] text-amber-500 font-black">Operator Node</span>
+            <span id="user-display" class="font-bold text-white text-sm">LOADING...</span>
+        </div>
+        <a href="/home.html" class="nav-btn"><i class="fas fa-th-large mr-2"></i>Mall Home</a>
+        <div onclick="secureEntry()" class="relative cursor-pointer bg-white/5 p-3 rounded-xl border border-white/10 hover:border-amber-400 transition">
+            <i class="fas fa-shopping-bag text-amber-400 text-xl"></i>
+            <span id="cart-count" class="absolute -top-2 -right-2 bg-amber-500 text-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black">0</span>
+        </div>
+    </div>
+</nav>
+
+<div class="container mx-auto px-6 py-10">
+    <div class="flex flex-col lg:flex-row gap-8">
+        <aside class="w-full lg:w-64 flex-shrink-0">
+            <div class="bg-[#0a0a0a] border border-[#1a1a1a] p-6 rounded-2xl sticky top-28">
+                <h3 class="font-black text-[10px] uppercase text-amber-500 mb-4 tracking-widest">Sector Filters</h3>
+                <div class="flex flex-col gap-4 text-[11px] text-white/70">
+                    <label class="flex items-center gap-3 cursor-pointer hover:text-white"><input type="checkbox" value="Watches" class="cat-check" onchange="filterProducts()" checked> Watches</label>
+                    <label class="flex items-center gap-3 cursor-pointer hover:text-white"><input type="checkbox" value="Apparel" class="cat-check" onchange="filterProducts()" checked> Apparel</label>
+                    <label class="flex items-center gap-3 cursor-pointer hover:text-white"><input type="checkbox" value="Footwear" class="cat-check" onchange="filterProducts()" checked> Footwear</label>
+                    <label class="flex items-center gap-3 cursor-pointer hover:text-white"><input type="checkbox" value="Bags" class="cat-check" onchange="filterProducts()" checked> Bags</label>
+                    <label class="flex items-center gap-3 cursor-pointer hover:text-white"><input type="checkbox" value="Accessories" class="cat-check" onchange="filterProducts()" checked> Accessories</label>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-grow">
+            <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </main>
+
+        <aside class="w-full lg:w-80 flex-shrink-0">
+            <div class="summary-panel">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="font-black text-amber-500 text-xs tracking-widest uppercase">Style Registry</h2>
+                    <span class="text-[9px] font-mono text-white/20">LIVE_SYNC</span>
+                </div>
+                <div id="summary-items" class="flex-grow overflow-y-auto space-y-3 mb-6 pr-2"></div>
+                <div class="border-t border-white/10 pt-6">
+                    <div class="flex justify-between items-end mb-6">
+                        <span class="text-white/40 text-[10px] uppercase tracking-widest">Market Value</span>
+                        <span id="total-price" class="font-mono text-2xl font-bold text-amber-400">₹0</span>
+                    </div>
+                    <button onclick="secureEntry()" class="w-full bg-amber-500 text-black py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-amber-500/20">
+                        Secure Payload
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+    const products = [
+        { id: 0, name: "Rolex GMT-Master II 'Pepsi'", price: 1250000, category: "Watches", spec: "Oystersteel, Jubilee", sizing: false, performance: 95 },
+        { id: 1, name: "Patek Philippe Aquanaut", price: 1450000, category: "Watches", spec: "Self-winding, Tropical", sizing: false, performance: 98 },
+        { id: 4, name: "Audemars Piguet Royal Oak", price: 1850000, category: "Watches", spec: "Octagonal Bezel", sizing: false, performance: 99 },
+        { id: 5, name: "Gucci Technical Jacket", price: 125000, category: "Apparel", spec: "Jersey, Web Trim", sizing: true, performance: 75 },
+        { id: 6, name: "Supreme Box Logo Hoodie", price: 65000, category: "Apparel", spec: "Heavyweight Fleece", sizing: true, performance: 68 },
+        { id: 8, name: "Balenciaga Speed Trainer", price: 72000, category: "Apparel", spec: "Technical 3D Knit", sizing: true, performance: 70 },
+        { id: 13, name: "Nike Air Jordan 1 Retro", price: 18500, category: "Footwear", spec: "Premium Leather", sizing: true, performance: 55 },
+        { id: 14, name: "Adidas Yeezy Boost 350", price: 24900, category: "Footwear", spec: "Primeknit, Boost", sizing: true, performance: 60 },
+        { id: 19, name: "LV Keepall 55", price: 185000, category: "Bags", spec: "Monogram Canvas", sizing: false, performance: 85 },
+        { id: 25, name: "Hermès H Belt 32mm", price: 72000, category: "Accessories", spec: "Reversible Leather", sizing: false, performance: 68 }
+    ];
+
+    let registry = products.map(p => ({ ...p, qty: 0, selectedSize: "M" }));
+
+    function syncToGlobalCart() {
+        let globalCart = JSON.parse(localStorage.getItem('cart')) || [];
+        // Extract items from this sector
+        const localActive = registry.filter(p => p.qty > 0).map(p => ({ 
+            name: p.name, 
+            price: p.price, 
+            qty: p.qty,
+            category: 'Fashion'
+        }));
+        // Merge with items from other sectors (Beauty, Fitness, etc.)
+        const otherSectorItems = globalCart.filter(gItem => !registry.some(rItem => rItem.name === gItem.name));
+        const finalCart = [...otherSectorItems, ...localActive];
+        
+        localStorage.setItem('cart', JSON.stringify(finalCart));
+        document.getElementById('cart-count').innerText = finalCart.reduce((s, i) => s + i.qty, 0);
+    }
+
+    function updateItem(id, key, val) {
+        const item = registry.find(p => p.id === id);
+        item[key] = val;
+        if(key === 'qty' && val > 0) {
+            confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 }, colors: ['#fbbf24', '#ffffff'] });
+        }
+        syncToGlobalCart(); updateSummary(); renderProducts();
+    }
+
+    function renderProducts(list = registry) {
+        const container = document.getElementById("product-list");
+        container.innerHTML = list.map((p) => `
+            <div class="marketplace-card">
+                <div class="relative bg-white h-48 flex items-center justify-center p-6">
+                    <img src="https://picsum.photos/seed/fashion-${p.id}/400/400" class="max-h-full object-contain">
+                    <div class="absolute top-4 right-4 bg-black/80 backdrop-blur px-3 py-1 rounded-full border border-white/10">
+                        <span class="text-[10px] font-bold text-amber-500">LVL ${p.performance}</span>
+                    </div>
+                </div>
+                <div class="p-5 flex-1 bg-black">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="text-amber-500 font-bold uppercase text-[8px] tracking-widest">${p.category}</span>
+                            <h3 class="text-xs font-bold text-white uppercase mt-1">${p.name}</h3>
+                        </div>
+                    </div>
+                    <p class="text-[9px] font-mono text-white/30 leading-relaxed">${p.spec}</p>
+                    ${p.sizing ? `
+                        <div class="flex gap-2 mt-4">
+                            ${['S','M','L'].map(s=>`
+                                <div onclick="updateItem(${p.id},'selectedSize','${s}')" 
+                                     class="size-chip ${p.selectedSize===s?'active':''}">
+                                    ${s}
+                                </div>
+                            `).join('')}
+                        </div>` : ''}
+                </div>
+                <div class="qty-node">
+                    <div onclick="updateItem(${p.id}, 'qty', Math.max(0, ${p.qty - 1}))" class="qty-btn"><i class="fas fa-minus text-[10px]"></i></div>
+                    <span class="w-12 text-center text-white font-mono text-sm">${p.qty}</span>
+                    <div onclick="updateItem(${p.id}, 'qty', ${p.qty + 1})" class="qty-btn"><i class="fas fa-plus text-[10px]"></i></div>
+                </div>
+                <div class="price-priority-box">₹${p.price.toLocaleString('en-IN')}</div>
+            </div>`).join("");
+    }
+
+    function updateSummary() {
+        const activeItems = registry.filter(p => p.qty > 0);
+        document.getElementById("summary-items").innerHTML = activeItems.map(p => `
+            <div class="bg-white/5 p-4 rounded-xl border border-white/10 flex justify-between items-center group">
+                <div>
+                    <span class="text-[10px] font-bold text-white uppercase block">${p.name}</span>
+                    <span class="text-[8px] text-amber-500/50 uppercase">Secured</span>
+                </div>
+                <span class="font-mono text-amber-400 text-xs">x${p.qty}</span>
+            </div>`).join("");
+        
+        const sectorTotal = activeItems.reduce((acc, p) => acc + (p.price * p.qty), 0);
+        document.getElementById("total-price").innerText = `₹${sectorTotal.toLocaleString('en-IN')}`;
+    }
+
+    function filterProducts() {
+        const selectedCats = Array.from(document.querySelectorAll('.cat-check:checked')).map(cb => cb.value);
+        renderProducts(registry.filter(p => selectedCats.includes(p.category)));
+    }
+
+    function secureEntry() { 
+        syncToGlobalCart(); 
+        window.location.href = "/"; // Returns to your React App root for payment
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // 1. Identify Operator from React Session
+        const operatorName = localStorage.getItem('neo_user') || "GUEST_USER";
+        document.getElementById('user-display').innerText = operatorName.toUpperCase();
+
+        // 2. Sync local registry with Global Cart
+        const globalCart = JSON.parse(localStorage.getItem('cart')) || [];
+        globalCart.forEach(gItem => { 
+            const localMatch = registry.find(rItem => rItem.name === gItem.name); 
+            if(localMatch) localMatch.qty = gItem.qty; 
+        });
+
+        renderProducts(); 
+        updateSummary(); 
+        syncToGlobalCart();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Stationery | Premium Writing Collection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --neon-gold: #fbbf24; --bg-dark: #050505; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: #f8fafc; margin: 0; overflow-x: hidden; }
+        .grid-bg { position: fixed; inset: 0; background-image: linear-gradient(rgba(251,191,36,0.02) 1px,transparent 1px), linear-gradient(90deg,rgba(251,191,36,0.02) 1px,transparent 1px); background-size: 50px 50px; z-index: -1; mask-image: radial-gradient(circle at center, black, transparent 90%); }
+        .marketplace-card { background: #0a0a0a; border-radius: 16px; border: 1px solid #1a1a1a; transition: 0.3s cubic-bezier(0.23, 1, 0.32, 1); overflow: hidden; display: flex; flex-direction: column; height: 100%; position: relative; }
+        .marketplace-card:hover { border-color: var(--neon-gold); transform: translateY(-3px); }
+        .price-priority-box { background: #fff; color: #000; font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 800; padding: 0.7rem 1rem; text-align: center; width: 100%; border-top: 1px solid var(--neon-gold); }
+        .official-nav { background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #1a1a1a; }
+        .qty-node { background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; border-top: 1px solid #1a1a1a; }
+        .qty-btn { padding: 10px 18px; transition: 0.2s; color: var(--neon-gold); font-weight: bold; cursor: pointer; }
+        .qty-btn:hover { background: var(--neon-gold); color: black; }
+        .nav-btn { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; padding: 8px 16px; border-radius: 8px; font-weight: bold; text-decoration: none; transition: all 0.3s; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(251,191,36,0.4); }
+        .filter-checkbox { width: 14px; height: 14px; accent-color: #fbbf24; cursor: pointer; }
+        .summary-panel { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 16px; padding: 24px; position: sticky; top: 110px; max-height: 80vh; display: flex; flex-direction: column; }
+        .benchmark-bar { height: 2px; background: #222; width: 100%; border-radius: 2px; margin-top: 4px; overflow: hidden; }
+        .benchmark-fill { height: 100%; background: var(--neon-gold); box-shadow: 0 0 10px var(--neon-gold); transition: width 1s ease-out; }
+    </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<nav class="official-nav flex items-center justify-between py-5 px-10 sticky top-0 z-50">
+    <div class="text-3xl font-black italic tracking-tighter" style="background: linear-gradient(to right, #ffffff, #fbbf24); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">ELITE<span class="text-amber-400">STATIONERY</span></div>
+    <div class="flex gap-8 text-white font-bold text-sm items-center">
+        <a href="home.html" class="nav-btn"><i class="fas fa-home mr-2"></i>Home</a>
+        <a href="checkout.html" class="nav-btn"><i class="fas fa-shopping-cart mr-2"></i>Checkout</a>
+        <div class="hidden sm:flex flex-col items-end pr-6 border-r border-white/10">
+            <span class="text-[8px] uppercase tracking-widest text-white/30">System Time</span>
+            <span id="live-clock" class="font-mono text-white text-lg">00:00:00</span>
+        </div>
+        <div onclick="window.location.href='checkout.html'" class="relative cursor-pointer">
+            <i class="fas fa-shopping-bag text-amber-400 text-xl"></i>
+            <span id="cart-count" class="absolute -top-3 -right-3 bg-white text-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black">0</span>
+        </div>
+    </div>
+</nav>
+
+<div class="container mx-auto px-6 py-10">
+    <div class="flex flex-col lg:flex-row gap-8">
+        <aside class="w-full lg:w-64 flex-shrink-0">
+            <div class="bg-[#0a0a0a] border border-[#1a1a1a] p-6 rounded-2xl sticky top-28">
+                <h3 class="font-black text-[10px] uppercase text-white/50 mb-3 italic">Filters</h3>
+                <div class="flex flex-col gap-3 text-[11px]">
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Writing" class="cat-check" onchange="filterProducts()" checked> Writing</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Notebooks" class="cat-check" onchange="filterProducts()" checked> Notebooks</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Art" class="cat-check" onchange="filterProducts()" checked> Art & Craft</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Office" class="cat-check" onchange="filterProducts()" checked> Office</label>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-grow"><div id="product-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div></main>
+
+        <aside class="w-full lg:w-80 flex-shrink-0">
+            <div class="summary-panel">
+                <h2 class="font-black text-amber-400 text-xs mb-4">CART OVERVIEW</h2>
+                <div id="summary-items" class="flex-grow overflow-y-auto mb-6 pr-2"></div>
+                <div class="border-t border-white/10 pt-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-white/40 text-[10px] uppercase font-bold tracking-widest">Stationery Total</span>
+                        <span id="total-price" class="font-mono text-xl font-bold text-amber-400">₹0</span>
+                    </div>
+                    <button onclick="secureEntry()" class="w-full bg-white text-black py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-amber-400 transition-all">Go to Checkout</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+const stationeryProducts = [
+  // WRITING
+  { id: 301, name: "Premium Fountain Pen Set", price: 2500, category: "Writing", spec: "German Nib, Luxury", quality: 95, rating: 4.8, reviews: 234, img: "https://m.media-amazon.com/images/I/61FqZVqJ3HL._SL1500_.jpg" },
+  { id: 302, name: "Executive Ballpoint Pens", price: 1800, category: "Writing", spec: "Metal Body, Refillable", quality: 88, rating: 4.6, reviews: 189, img: "https://m.media-amazon.com/images/I/71zK8aYqKJL._SL1500_.jpg" },
+  { id: 303, name: "Gel Pen Collection", price: 850, category: "Writing", spec: "Smooth, 12 Colors", quality: 75, rating: 4.5, reviews: 312, img: "https://m.media-amazon.com/images/I/71pQJ6Z8KPL._SL1500_.jpg" },
+  { id: 304, name: "Highlighter Set", price: 450, category: "Writing", spec: "6 Colors", quality: 65, rating: 4.4, reviews: 156, img: "https://m.media-amazon.com/images/I/71wQ9bK6aYL._SL1500_.jpg" },
+  { id: 305, name: "Permanent Markers Pack", price: 680, category: "Writing", spec: "Quick Dry, Fade Resist", quality: 70, rating: 4.3, reviews: 198, img: "https://m.media-amazon.com/images/I/71Xq8VqM6bL._SL1500_.jpg" },
+  { id: 306, name: "Whiteboard Markers", price: 720, category: "Writing", spec: "Erasable, 8 Colors", quality: 72, rating: 4.4, reviews: 145, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
+  { id: 307, name: "Mechanical Pencils", price: 950, category: "Writing", spec: "0.5mm, Metal Grip", quality: 80, rating: 4.7, reviews: 267, img: "https://m.media-amazon.com/images/I/61vK5zQ8JRL._SL1500_.jpg" },
+  { id: 308, name: "Colored Pencil Set", price: 1200, category: "Writing", spec: "48 Colors, Artist Grade", quality: 85, rating: 4.6, reviews: 223, img: "https://m.media-amazon.com/images/I/81pQ9bK6aYL._SL1500_.jpg" },
+  { id: 309, name: "Calligraphy Pen Set", price: 1500, category: "Writing", spec: "5 Nib Sizes", quality: 90, rating: 4.8, reviews: 178, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
+  
+  // NOTEBOOKS
+  { id: 310, name: "Ruled Notebook A4", price: 280, category: "Notebooks", spec: "200 Pages", quality: 70, rating: 4.5, reviews: 445, img: "https://m.media-amazon.com/images/I/71K8pL5RzXL._SL1500_.jpg" },
+  { id: 311, name: "Leather Journal", price: 2200, category: "Notebooks", spec: "Handcrafted Leather", quality: 95, rating: 4.9, reviews: 156, img: "https://m.media-amazon.com/images/I/81vK5zQ9JRL._SL1500_.jpg" },
+  { id: 312, name: "Bullet Journal Dotted", price: 850, category: "Notebooks", spec: "180gsm Paper", quality: 82, rating: 4.7, reviews: 298, img: "https://m.media-amazon.com/images/I/71pQ9bK6aVL._SL1500_.jpg" },
+  { id: 313, name: "Sketchbook A3", price: 650, category: "Notebooks", spec: "120gsm Paper", quality: 78, rating: 4.6, reviews: 189, img: "https://m.media-amazon.com/images/I/71vK5zQ9JRL._SL1500_.jpg" },
+  { id: 314, name: "Spiral Notebook Pack", price: 550, category: "Notebooks", spec: "Pack of 3", quality: 68, rating: 4.4, reviews: 267, img: "https://m.media-amazon.com/images/I/71pQ9bK7aYL._SL1500_.jpg" },
+  { id: 315, name: "Graph Notebook A4", price: 350, category: "Notebooks", spec: "5mm Grid", quality: 65, rating: 4.3, reviews: 234, img: "https://m.media-amazon.com/images/I/71wQ8VqM7bL._SL1500_.jpg" },
+
+  // KIDS
+  { id: 316, name: "Character Stickers", price: 320, category: "Kids", spec: "500pcs Assorted", quality: 60, rating: 4.5, reviews: 389, img: "https://m.media-amazon.com/images/I/81vK5zQ8KRL._SL1500_.jpg" },
+  { id: 317, name: "Coloring Book Set", price: 550, category: "Kids", spec: "5 Themes", quality: 70, rating: 4.6, reviews: 312, img: "https://m.media-amazon.com/images/I/81pQ9bK6aYL._SL1500_.jpg" },
+  { id: 318, name: "Wax Crayons 24 Colors", price: 280, category: "Kids", spec: "Non-Toxic", quality: 65, rating: 4.4, reviews: 267, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
+  { id: 319, name: "Oil Pastels 36 Colors", price: 420, category: "Kids", spec: "Washable", quality: 68, rating: 4.5, reviews: 198, img: "https://m.media-amazon.com/images/I/81K8pL6RzXL._SL1500_.jpg" },
+  { id: 320, name: "Kids Activity Book", price: 380, category: "Kids", spec: "Puzzles & Mazes", quality: 62, rating: 4.3, reviews: 156, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
+
+  // ORGANIZATION
+  { id: 321, name: "File Folders 25pcs", price: 420, category: "Organization", spec: "Manila, Tab Cut", quality: 55, rating: 4.2, reviews: 234, img: "https://m.media-amazon.com/images/I/71vK5zQ8KRL._SL1500_.jpg" },
+  { id: 322, name: "Ring Binders A4", price: 980, category: "Organization", spec: "Pack of 5", quality: 75, rating: 4.5, reviews: 189, img: "https://m.media-amazon.com/images/I/71pQ9bK6bYL._SL1500_.jpg" },
+  { id: 323, name: "Expanding File", price: 750, category: "Organization", spec: "13 Pockets", quality: 70, rating: 4.4, reviews: 167, img: "https://m.media-amazon.com/images/I/71wQ8VqM7bL._SL1500_.jpg" },
+  { id: 324, name: "Sheet Protectors", price: 420, category: "Organization", spec: "100pcs A4", quality: 58, rating: 4.3, reviews: 298, img: "https://m.media-amazon.com/images/I/71K8pL6RzYL._SL1500_.jpg" },
+  { id: 325, name: "Binder Clips Pack", price: 280, category: "Organization", spec: "50 Clips", quality: 52, rating: 4.2, reviews: 445, img: "https://m.media-amazon.com/images/I/71K8pL6RzYL._SL1500_.jpg" },
+
+  // CASES
+  { id: 326, name: "Leather Pencil Case", price: 650, category: "Cases", spec: "Genuine Leather", quality: 85, rating: 4.7, reviews: 178, img: "https://m.media-amazon.com/images/I/71K8pL6RzWL._SL1500_.jpg" },
+  { id: 327, name: "Multi-Layer Box", price: 420, category: "Cases", spec: "3 Compartments", quality: 68, rating: 4.4, reviews: 267, img: "https://m.media-amazon.com/images/I/71wQ8VqM6eL._SL1500_.jpg" },
+  { id: 328, name: "Wooden Desk Organizer", price: 1200, category: "Cases", spec: "Natural Wood", quality: 88, rating: 4.8, reviews: 145, img: "https://m.media-amazon.com/images/I/71wQ8VqM6dL._SL1500_.jpg" },
+  { id: 329, name: "Mesh Organizer Set", price: 980, category: "Cases", spec: "5-Piece Set", quality: 78, rating: 4.6, reviews: 198, img: "https://m.media-amazon.com/images/I/71vK5zQ8JWL._SL1500_.jpg" },
+
+  // OFFICE
+  { id: 330, name: "Standard Stapler", price: 420, category: "Office", spec: "Metal, 20-Sheet", quality: 65, rating: 4.4, reviews: 312, img: "https://m.media-amazon.com/images/I/71K8pL6RzYL._SL1500_.jpg" },
+  { id: 331, name: "Heavy Duty Stapler", price: 850, category: "Office", spec: "100-Sheet Steel", quality: 82, rating: 4.6, reviews: 167, img: "https://m.media-amazon.com/images/I/61vK5zQ8JTL._SL1500_.jpg" },
+  { id: 332, name: "Tape Dispenser", price: 320, category: "Office", spec: "Heavy Base", quality: 58, rating: 4.3, reviews: 289, img: "https://m.media-amazon.com/images/I/71pQ9bK6aZL._SL1500_.jpg" },
+  { id: 333, name: "Washi Tape Pack", price: 550, category: "Office", spec: "10 Decorative Rolls", quality: 70, rating: 4.5, reviews: 234, img: "https://m.media-amazon.com/images/I/81vK5zQ8KRL._SL1500_.jpg" },
+  { id: 334, name: "Sticky Notes Pack", price: 520, category: "Office", spec: "12 Pads Mega pack", quality: 62, rating: 4.4, reviews: 356, img: "https://m.media-amazon.com/images/I/71K8pL6SzXL._SL1500_.jpg" },
+  { id: 335, name: "Executive Planner", price: 1800, category: "Office", spec: "12-Month Daily", quality: 88, rating: 4.7, reviews: 178, img: "https://m.media-amazon.com/images/I/71wQ8VqP6bL._SL1500_.jpg" },
+  { id: 336, name: "Desk Calendar", price: 650, category: "Office", spec: "2026 Flip Design", quality: 68, rating: 4.5, reviews: 198, img: "https://m.media-amazon.com/images/I/71vK5zQ8JWL._SL1500_.jpg" },
+
+  // ART
+  { id: 337, name: "Watercolor Set", price: 1200, category: "Art", spec: "24 Artist Colors", quality: 85, rating: 4.7, reviews: 189, img: "https://m.media-amazon.com/images/I/81K8pL6RzXL._SL1500_.jpg" },
+  { id: 338, name: "Acrylic Paint Collection", price: 1500, category: "Art", spec: "12 Vibrant Tubes", quality: 88, rating: 4.8, reviews: 156, img: "https://m.media-amazon.com/images/I/81vK5zQ8JRL._SL1500_.jpg" },
+  { id: 339, name: "Paint Brush Set", price: 880, category: "Art", spec: "15 Assorted Brushes", quality: 78, rating: 4.6, reviews: 223, img: "https://m.media-amazon.com/images/I/71pQ9bK6cYL._SL1500_.jpg" },
+  { id: 340, name: "Canvas Sheet Pack", price: 1100, category: "Art", spec: "10 Pre-Primed Sheets", quality: 80, rating: 4.5, reviews: 145, img: "https://m.media-amazon.com/images/I/71wQ8VqM8bL._SL1500_.jpg" },
+  { id: 341, name: "Craft Paper Bundle", price: 580, category: "Art", spec: "50 Assorted Colors", quality: 65, rating: 4.4, reviews: 267, img: "https://m.media-amazon.com/images/I/71vK5zQ9JRL._SL1500_.jpg" },
+  { id: 342, name: "Precision Scissors", price: 950, category: "Art", spec: "Stainless Steel", quality: 75, rating: 4.6, reviews: 198, img: "https://m.media-amazon.com/images/I/71wQ8VqM6cL._SL1500_.jpg" },
+  { id: 343, name: "Glue Stick Pack", price: 420, category: "Art", spec: "Pack of 10", quality: 60, rating: 4.3, reviews: 289, img: "https://m.media-amazon.com/images/I/71vK5zQ8JXL._SL1500_.jpg" },
+  { id: 344, name: "Hot Glue Gun", price: 850, category: "Art", spec: "With 20 Sticks", quality: 72, rating: 4.5, reviews: 178, img: "https://m.media-amazon.com/images/I/71vK5zQ8JWL._SL1500_.jpg" }
+];
+
+let registry = stationeryProducts.map(p => ({ ...p, qty: 0, review: "" }));
+
+function updateClock() { document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('en-IN', { hour12: false }); }
+setInterval(updateClock, 1000);
+
+function syncToGlobalCart() {
+    let globalCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const localActive = registry.filter(p => p.qty > 0).map(p => ({ name: p.name, price: p.price, qty: p.qty }));
+    const otherCategoryItems = globalCart.filter(gItem => !registry.some(rItem => rItem.name === gItem.name));
+    const finalCart = [...otherCategoryItems, ...localActive];
+    localStorage.setItem('cart', JSON.stringify(finalCart));
+    document.getElementById('cart-count').innerText = finalCart.reduce((s, i) => s + i.qty, 0);
+}
+
+function filterProducts() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    const selectedCats = Array.from(document.querySelectorAll('.cat-check:checked')).map(cb => cb.value);
+    const filtered = registry.filter(p => (p.name.toLowerCase().includes(query)) && selectedCats.includes(p.category));
+    renderProducts(filtered);
+}
+
+function updateItem(id, key, val) {
+    const item = registry.find(p => p.id === id);
+    item[key] = val;
+    syncToGlobalCart();
+    updateSummary();
+    renderProducts();
+}
+
+function renderProducts(list = registry) {
+    const container = document.getElementById("product-list");
+    container.innerHTML = list.map((p) => `
+        <div class="marketplace-card">
+            <div class="relative bg-white h-44 flex items-center justify-center p-6"><img src="${p.img}" class="max-h-full transition-transform hover:scale-105"></div>
+            <div class="p-5 flex-1 bg-black">
+                <span class="text-[9px] font-bold text-amber-400 uppercase">${p.category}</span>
+                <h3 class="text-xs font-bold text-white uppercase truncate">${p.name}</h3>
+                <div class="benchmark-bar"><div class="benchmark-fill" style="width: ${p.quality}%"></div></div>
+                <p class="text-[9px] font-mono text-white/30 mt-2">${p.spec}</p>
+            </div>
+            <div class="qty-node">
+                <div onclick="updateItem(${p.id}, 'qty', Math.max(0, ${p.qty - 1}))" class="qty-btn"><i class="fas fa-minus text-[10px]"></i></div>
+                <span class="w-12 text-center text-white font-mono">${p.qty}</span>
+                <div onclick="updateItem(${p.id}, 'qty', ${p.qty + 1})" class="qty-btn"><i class="fas fa-plus text-[10px]"></i></div>
+            </div>
+            <div class="price-priority-box">₹${p.price.toLocaleString('en-IN')}</div>
+        </div>`).join("");
+}
+
+function updateSummary() {
+    const activeItems = registry.filter(p => p.qty > 0);
+    const container = document.getElementById("summary-items");
+    if(activeItems.length === 0) {
+        container.innerHTML = `<p class="text-[10px] text-white/20 uppercase text-center py-10">Cart Empty</p>`;
+        document.getElementById("total-price").innerText = "₹0";
+        return;
+    }
+    container.innerHTML = activeItems.map(p => `
+        <div class="bg-white/5 p-3 rounded-lg border border-white/10 mb-2">
+            <div class="flex justify-between items-start"><span class="text-[10px] font-bold text-white uppercase">${p.name}</span><span class="text-[10px] font-mono text-amber-400">x${p.qty}</span></div>
+        </div>`).join("");
+    const total = activeItems.reduce((acc, p) => acc + (p.price * p.qty), 0);
+    document.getElementById("total-price").innerText = `₹${total.toLocaleString('en-IN')}`;
+}
+
+function secureEntry() { syncToGlobalCart(); window.location.href = "checkout.html"; }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const globalCart = JSON.parse(localStorage.getItem('cart')) || [];
+    globalCart.forEach(gItem => {
+        const localMatch = registry.find(rItem => rItem.name === gItem.name);
+        if(localMatch) localMatch.qty = gItem.qty;
+    });
+    renderProducts(); updateSummary(); updateClock(); syncToGlobalCart();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoCommerce | Visual Intelligence Audit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { --gold: #fbbf24; --bg: #020202; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+        .matrix-card {
+            background: rgba(15, 15, 15, 0.9);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        .matrix-card:hover { border-color: var(--gold); transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+        
+        /* Category Visuals */
+        .cat-img { height: 160px; width: 100%; background-size: cover; background-position: center; opacity: 0.5; transition: 0.5s; }
+        .matrix-card:hover .cat-img { opacity: 0.8; transform: scale(1.05); }
+
+        .rating-stars { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 8px; }
+        .rating-stars input { display: none; }
+        .rating-stars label { font-size: 2.5rem; color: #1a1a1a; cursor: pointer; transition: 0.2s; }
+        .rating-stars label:hover, .rating-stars label:hover ~ label, .rating-stars input:checked ~ label { color: var(--gold); text-shadow: 0 0 15px var(--gold); }
+
+        .form-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.96);
+            backdrop-filter: blur(30px); z-index: 100;
+            display: none; align-items: center; justify-content: center;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+
+    <header class="max-w-7xl mx-auto mb-16 flex justify-between items-center border-b border-white/5 pb-8">
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <span class="w-8 h-[1px] bg-amber-500"></span>
+                <span class="font-mono text-[9px] text-amber-500 uppercase tracking-[0.4em]">Integrated Supply Chain Audit</span>
+            </div>
+            <h1 class="text-6xl font-black italic uppercase tracking-tighter italic">NEO<span class="text-slate-500">FEEDBACK.</span></h1>
+        </div>
+        <button onclick="window.location.href='logout.html'" class="px-8 py-3 rounded-full border border-red-500/30 text-red-500 text-[10px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all">
+            Exit System
+        </button>
+    </header>
+
+    <main class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <div class="matrix-card" onclick="openPortal('Beauty & Personal Care', ['Skincare', 'Haircare', 'Makeup', 'Men’s Grooming'])">
+            <div class="cat-img" style="background-image: url('https://img.freepik.com/premium-photo/beauty-personal-care-images-beauty-products_954932-2827.jpg');"></div>
+            <div class="p-8"><h3 class="font-bold uppercase tracking-widest text-sm text-amber-500">Beauty & Personal Care</h3></div>
+        </div>
+
+        <div class="matrix-card" onclick="openPortal('Fashion & Accessories', ['Men’s clothing', 'Women’s clothing', 'Footwear', 'Watches & accessories'])">
+            <div class="cat-img" style="background-image: url('https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=800&auto=format&fit=crop');"></div>
+            <div class="p-8"><h3 class="font-bold uppercase tracking-widest text-sm text-amber-500">Fashion & Accessories</h3></div>
+        </div>
+
+        <div class="matrix-card" onclick="openPortal('Electronics & Gadgets', ['Mobiles & accessories', 'Laptops', 'Headphones', 'Smart devices'])">
+            <div class="cat-img" style="background-image: url('https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=800&auto=format&fit=crop');"></div>
+            <div class="p-8"><h3 class="font-bold uppercase tracking-widest text-sm text-amber-500">Electronics & Gadgets</h3></div>
+        </div>
+
+        <div class="matrix-card" onclick="openPortal('Home & Kitchen', ['Furniture', 'Kitchen appliances', 'Home décor'])">
+            <div class="cat-img" style="background-image: url('https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800&auto=format&fit=crop');"></div>
+            <div class="p-8"><h3 class="font-bold uppercase tracking-widest text-sm text-amber-500">Home & Kitchen</h3></div>
+        </div>
+
+        <div class="matrix-card" onclick="openPortal('Books & Stationery', ['Academic books', 'Novels', 'Office supplies'])">
+            <div class="cat-img" style="background-image: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=800&auto=format&fit=crop');"></div>
+            <div class="p-8"><h3 class="font-bold uppercase tracking-widest text-sm text-amber-500">Books & Stationery</h3></div>
+        </div>
+
+        <div class="matrix-card" onclick="openPortal('Health & Fitness', ['Supplements', 'Fitness equipment'])">
+            <div class="cat-img" style="background-image: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop');"></div>
+            <div class="p-8"><h3 class="font-bold uppercase tracking-widest text-sm text-amber-500">Health & Fitness</h3></div>
+        </div>
+
+    </main>
+
+    <div id="portal-overlay" class="form-overlay">
+        
+        <div id="form-view" class="w-full max-w-xl bg-[#080808] border border-white/5 p-12 rounded-3xl relative">
+            <button onclick="closePortal()" class="absolute top-8 right-8 text-slate-600 hover:text-white"><i class="fas fa-times"></i></button>
+            <h2 class="text-3xl font-black uppercase italic mb-8" id="target-title">Feedback</h2>
+
+            <form id="intel-form" class="space-y-6">
+                <div>
+                    <label class="text-[10px] text-slate-500 uppercase font-bold block mb-2">Category Segment</label>
+                    <select id="sub-select" class="w-full bg-white/5 border border-white/10 p-4 text-xs font-bold text-white outline-none rounded-xl"></select>
+                </div>
+                <div>
+                    <label class="text-[10px] text-slate-500 uppercase font-bold block mb-2">System Performance</label>
+                    <div class="rating-stars">
+                        <input type="radio" id="s5" name="stars" value="5" required/><label for="s5">★</label>
+                        <input type="radio" id="s4" name="stars" value="4" /><label for="s4">★</label>
+                        <input type="radio" id="s3" name="stars" value="3" /><label for="s3">★</label>
+                        <input type="radio" id="s2" name="stars" value="2" /><label for="s2">★</label>
+                        <input type="radio" id="s1" name="stars" value="1" /><label for="s1">★</label>
+                    </div>
+                </div>
+                <textarea class="w-full bg-white/5 border border-white/10 p-4 text-xs text-white outline-none h-32 rounded-xl" placeholder="Describe your experience..."></textarea>
+                <button type="submit" class="w-full py-5 bg-amber-500 text-black font-black uppercase text-[10px] tracking-[0.4em] rounded-xl">Initialize Transmission</button>
+            </form>
+        </div>
+
+        <div id="success-view" class="hidden w-full max-w-lg text-center animate-in zoom-in fade-in duration-500">
+            <div class="mb-10 flex justify-center">
+                <div class="w-24 h-24 rounded-full bg-amber-500/10 flex items-center justify-center border border-amber-500/20 shadow-[0_0_30px_rgba(251,191,36,0.1)]">
+                    <i class="fas fa-truck-fast text-amber-500 text-4xl"></i>
+                </div>
+            </div>
+            <h2 class="text-4xl font-black italic uppercase tracking-tighter mb-4">Transmission Success.</h2>
+            
+            <div class="p-8 text-left mb-10 border-l-4 border-amber-500 bg-white/5 rounded-r-2xl">
+                <p class="text-[14px] text-slate-200 leading-relaxed italic mb-4">
+                    "Thank you for your valuable intelligence. Our system has verified your report. <span class="text-amber-500 font-black uppercase">Your recent orders are processed and will arrive shortly</span> at your designated location."
+                </p>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="font-mono text-[10px] text-emerald-500 uppercase font-black">Shipment Tracking: Active</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <button onclick="resetPortal()" class="w-full py-4 bg-white/10 text-white font-black uppercase text-[10px] tracking-[0.4em] rounded-xl hover:bg-white/20 transition-all">
+                    Audit Another Item
+                </button>
+                <button onclick="window.location.href='logout.html'" class="w-full py-4 bg-amber-500 text-black font-black uppercase text-[10px] tracking-[0.4em] rounded-xl shadow-lg shadow-amber-500/10">
+                    Finalize & Logout
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openPortal(category, subs) {
+            document.getElementById('target-title').innerText = category.toUpperCase();
+            const select = document.getElementById('sub-select');
+            select.innerHTML = '';
+            subs.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s; opt.innerText = s.toUpperCase();
+                opt.className = "bg-black text-white";
+                select.appendChild(opt);
+            });
+            document.getElementById('portal-overlay').style.display = 'flex';
+        }
+
+        function closePortal() { document.getElementById('portal-overlay').style.display = 'none'; }
+
+        function resetPortal() {
+            document.getElementById('success-view').classList.add('hidden');
+            document.getElementById('form-view').classList.remove('hidden');
+        }
+
+        document.getElementById('intel-form').onsubmit = (e) => {
+            e.preventDefault();
+            document.getElementById('form-view').classList.add('hidden');
+            document.getElementById('success-view').classList.remove('hidden');
+        };
+    </script>
+</body>
+</html>

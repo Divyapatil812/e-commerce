@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neo Beauty | Beauty Registry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --neon-gold: #fbbf24; --bg-dark: #050505; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: #f8fafc; margin: 0; overflow-x: hidden; }
+        .grid-bg { position: fixed; inset: 0; background-image: linear-gradient(rgba(251,191,36,0.02) 1px,transparent 1px), linear-gradient(90deg,rgba(251,191,36,0.02) 1px,transparent 1px); background-size: 50px 50px; z-index: -1; mask-image: radial-gradient(circle at center, black, transparent 90%); }
+        .marketplace-card { background: #0a0a0a; border-radius: 16px; border: 1px solid #1a1a1a; transition: 0.3s cubic-bezier(0.23, 1, 0.32, 1); overflow: hidden; display: flex; flex-direction: column; height: 100%; position: relative; }
+        .marketplace-card:hover { border-color: var(--neon-gold); transform: translateY(-3px); }
+        .price-priority-box { background: #fff; color: #000; font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 800; padding: 0.7rem 1rem; text-align: center; width: 100%; border-top: 1px solid var(--neon-gold); }
+        .official-nav { background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #1a1a1a; }
+        .qty-node { background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; border-top: 1px solid #1a1a1a; }
+        .qty-btn { padding: 10px 18px; transition: 0.2s; color: var(--neon-gold); font-weight: bold; cursor: pointer; }
+        .qty-btn:hover { background: var(--neon-gold); color: black; }
+        .nav-btn { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; padding: 8px 16px; border-radius: 8px; font-weight: bold; text-decoration: none; transition: all 0.3s; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(251,191,36,0.4); }
+        .filter-checkbox { width: 14px; height: 14px; accent-color: #fbbf24; cursor: pointer; }
+        .filter-section { transition: all 0.3s ease; overflow: hidden; }
+        .filter-section.collapsed { max-height: 0; opacity: 0; }
+        .filter-section.expanded { max-height: 500px; opacity: 1; }
+        .filter-toggle { cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1a1a1a; margin-bottom: 12px; }
+        .review-input { background: #111; border: 1px solid #222; color: #aaa; font-size: 10px; width: 100%; border-radius: 4px; padding: 6px 8px; margin-top: 8px; outline: none; }
+        .summary-panel { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 16px; padding: 24px; position: sticky; top: 110px; max-height: 80vh; display: flex; flex-direction: column; }
+        .benchmark-bar { height: 2px; background: #222; width: 100%; border-radius: 2px; margin-top: 4px; overflow: hidden; }
+        .benchmark-fill { height: 100%; background: var(--neon-gold); box-shadow: 0 0 10px var(--neon-gold); transition: width 1s ease-out; }
+    </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav class="official-nav flex items-center justify-between py-5 px-10 sticky top-0 z-50">
+   <div class="text-3xl font-black italic tracking-tighter elite-title">NEOBEAUTY</div>
+    
+    <div class="flex-grow max-w-[400px] relative hidden md:block mx-10">
+        <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="Search Beauty Nodes..." class="w-full bg-white/5 border border-white/10 px-10 py-2 rounded-full outline-none text-xs text-white focus:border-amber-400">
+    </div>
+    <div class="flex gap-8 text-white font-bold text-sm items-center">
+        <a href="home.html" class="nav-btn"><i class="fas fa-home mr-2"></i>Home</a>
+        <a href="checkout.html" class="nav-btn"><i class="fas fa-shopping-cart mr-2"></i>Checkout</a>
+        <div class="hidden sm:flex flex-col items-end pr-6 border-r border-white/10">
+            <span class="text-[8px] uppercase tracking-widest text-white/30">System Time</span>
+            <span id="live-clock" class="font-mono text-white text-lg">00:00:00</span>
+        </div>
+        <div onclick="window.location.href='checkout.html'" class="relative cursor-pointer">
+            <i class="fas fa-shopping-cart text-amber-400 text-xl"></i>
+            <span id="cart-count" class="absolute -top-3 -right-3 bg-white text-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black">0</span>
+        </div>
+    </div>
+</nav>
+
+<div class="container mx-auto px-6 py-10">
+    <div class="flex flex-col lg:flex-row gap-8">
+        <aside class="w-full lg:w-64 flex-shrink-0">
+            <div class="bg-[#0a0a0a] border border-[#1a1a1a] p-6 rounded-2xl sticky top-28">
+                <div class="mb-6">
+                    <h3 class="font-black text-[10px] uppercase tracking-widest text-white/50 italic mb-3">Sort By</h3>
+                    <select id="sort-select" onchange="filterProducts()" class="w-full bg-black border border-white/10 text-white text-[10px] px-3 py-2 rounded-lg">
+                        <option value="default">Default</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="rating">Rating</option>
+                    </select>
+                </div>
+                <div class="filter-toggle" onclick="toggleFilter()">
+                    <h2 class="font-black text-[10px] uppercase tracking-widest text-white/50 italic">Categories</h2>
+                    <i id="filter-icon" class="fas fa-chevron-down text-amber-400 text-xs"></i>
+                </div>
+                <div id="filter-content" class="filter-section expanded">
+                    <div class="flex flex-col gap-3 text-[11px] mb-8 mt-4">
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" value="Skincare" class="filter-checkbox cat-check" onchange="filterProducts()" checked> Skincare</label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" value="Makeup" class="filter-checkbox cat-check" onchange="filterProducts()" checked> Makeup</label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" value="Fragrance" class="filter-checkbox cat-check" onchange="filterProducts()" checked> Fragrance</label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" value="Haircare" class="filter-checkbox cat-check" onchange="filterProducts()" checked> Haircare</label>
+                        <label class="flex items-center gap-3 cursor-pointer"><input type="checkbox" value="Tools" class="filter-checkbox cat-check" onchange="filterProducts()" checked> Tools</label>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-grow"><div id="product-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div></main>
+
+        <aside class="w-full lg:w-80 flex-shrink-0">
+            <div class="summary-panel">
+                <h2 class="font-black text-[10px] uppercase tracking-widest text-amber-400 mb-6 flex justify-between"><span>Registry</span><i class="fas fa-barcode"></i></h2>
+                <div id="summary-items" class="flex-grow overflow-y-auto space-y-4 mb-6 pr-2"></div>
+                <div class="border-t border-white/10 pt-6">
+                    <div class="flex justify-between items-end mb-4">
+                        <span class="text-[8px] uppercase font-bold text-white/40 tracking-widest">Current Valuation</span>
+                        <span id="total-price" class="font-mono text-xl font-bold text-amber-400">₹0</span>
+                    </div>
+                    <button onclick="secureEntry()" class="w-full bg-white text-black py-4 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-amber-400 transition-all">Go to Checkout</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+    const products = [
+        // SKINCARE (25 items)
+        { id: 0, name: "Estée Lauder Advanced Night Repair", price: 7500, category: "Skincare", spec: "50ml Serum, Hyaluronic Acid", performance: 92, rating: 4.8, reviews: 8765, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 1, name: "La Mer Crème de la Mer", price: 24500, category: "Skincare", spec: "60ml, Miracle Broth", performance: 98, rating: 4.9, reviews: 3456, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 2, name: "SK-II Facial Treatment Essence", price: 16500, category: "Skincare", spec: "230ml, Pitera Complex", performance: 95, rating: 4.7, reviews: 6543, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 3, name: "The Ordinary Niacinamide 10% + Zinc 1%", price: 950, category: "Skincare", spec: "30ml Formula", performance: 78, rating: 4.5, reviews: 12345, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 4, name: "Drunk Elephant C-Firma Fresh", price: 6800, category: "Skincare", spec: "30ml Vitamin C", performance: 88, rating: 4.6, reviews: 4321, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 5, name: "Paula's Choice 2% BHA", price: 3200, category: "Skincare", spec: "118ml Salicylic Acid", performance: 85, rating: 4.7, reviews: 9876, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 6, name: "Tatcha The Water Cream", price: 7200, category: "Skincare", spec: "50ml Oil-Free", performance: 86, rating: 4.5, reviews: 5432, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 7, name: "Sunday Riley Good Genes", price: 10500, category: "Skincare", spec: "30ml Lactic Acid", performance: 90, rating: 4.6, reviews: 3210, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 8, name: "Clinique Moisture Surge 100H", price: 4500, category: "Skincare", spec: "75ml Hydrator", performance: 82, rating: 4.4, reviews: 7654, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 9, name: "Fresh Rose Face Mask", price: 5800, category: "Skincare", spec: "100ml Gel Mask", performance: 80, rating: 4.3, reviews: 4567, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 10, name: "Cetaphil Gentle Skin Cleanser", price: 850, category: "Skincare", spec: "500ml Cleanser", performance: 72, rating: 4.5, reviews: 15432, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 11, name: "Neutrogena Hydro Boost", price: 1200, category: "Skincare", spec: "50g Water Gel", performance: 75, rating: 4.4, reviews: 11234, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 12, name: "Kiehl's Ultra Facial Cream", price: 3500, category: "Skincare", spec: "50ml 24hr Hydration", performance: 83, rating: 4.6, reviews: 6789, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 13, name: "Origins GinZing Eye Cream", price: 3200, category: "Skincare", spec: "15ml Brightening", performance: 79, rating: 4.3, reviews: 5678, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 14, name: "Laneige Water Sleeping Mask", price: 2800, category: "Skincare", spec: "70ml Overnight", performance: 84, rating: 4.7, reviews: 8901, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 15, name: "COSRX Snail Mucin Essence", price: 1800, category: "Skincare", spec: "100ml 96% Secretion", performance: 87, rating: 4.8, reviews: 13456, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 16, name: "Bioderma Sensibio H2O", price: 1500, category: "Skincare", spec: "500ml Micellar", performance: 76, rating: 4.6, reviews: 9876, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 17, name: "CeraVe Moisturizing Cream", price: 1350, category: "Skincare", spec: "340g Ceramides", performance: 81, rating: 4.7, reviews: 14567, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 18, name: "The Inkey List Retinol", price: 1200, category: "Skincare", spec: "30ml Anti-Aging", performance: 82, rating: 4.4, reviews: 7890, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 19, name: "Versed Pressed Serum", price: 2500, category: "Skincare", spec: "30ml Strengthening", performance: 77, rating: 4.3, reviews: 4321, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 20, name: "Youth to the People Cleanser", price: 3600, category: "Skincare", spec: "237ml Superfood", performance: 80, rating: 4.5, reviews: 6543, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 21, name: "Glow Recipe Watermelon Mask", price: 4200, category: "Skincare", spec: "80ml Sleeping", performance: 83, rating: 4.6, reviews: 5432, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 22, name: "Dr. Jart+ Cicapair Cream", price: 4800, category: "Skincare", spec: "50ml Tiger Grass", performance: 85, rating: 4.7, reviews: 4567, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 23, name: "Herbivore Blue Tansy Mask", price: 5500, category: "Skincare", spec: "50ml Resurfacing", performance: 84, rating: 4.5, reviews: 3456, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500" },
+        { id: 24, name: "Foreo Luna Mini 3", price: 12500, category: "Tools", spec: "Sonic Brush", performance: 88, rating: 4.6, reviews: 5678, image: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=500" },
+
+        // MAKEUP (25 items)
+        { id: 25, name: "MAC Studio Fix Fluid", price: 3400, category: "Makeup", spec: "30ml Medium Coverage", performance: 85, rating: 4.6, reviews: 9876, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 26, name: "Charlotte Tilbury Filter", price: 4800, category: "Makeup", spec: "30ml Complexion", performance: 92, rating: 4.8, reviews: 7654, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 27, name: "NARS Concealer", price: 3200, category: "Makeup", spec: "6ml Multi-Use", performance: 88, rating: 4.7, reviews: 11234, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 28, name: "Urban Decay Naked", price: 5500, category: "Makeup", spec: "12 Eyeshadows", performance: 90, rating: 4.8, reviews: 15432, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 29, name: "Fenty Beauty Foundation", price: 3800, category: "Makeup", spec: "32ml 50 Shades", performance: 89, rating: 4.7, reviews: 13456, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 30, name: "Benefit Hoola Bronzer", price: 3200, category: "Makeup", spec: "8g Matte", performance: 84, rating: 4.6, reviews: 8765, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 31, name: "Anastasia Brow Wiz", price: 2400, category: "Makeup", spec: "Ultra-Slim Pencil", performance: 86, rating: 4.7, reviews: 12345, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 32, name: "Rare Beauty Blush", price: 2800, category: "Makeup", spec: "Liquid Blush 15ml", performance: 87, rating: 4.8, reviews: 9876, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 33, name: "Maybelline Fit Me", price: 850, category: "Makeup", spec: "30ml Matte", performance: 76, rating: 4.4, reviews: 18765, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 34, name: "L'Oréal Voluminous", price: 950, category: "Makeup", spec: "Mascara Black", performance: 78, rating: 4.5, reviews: 16543, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 35, name: "Huda Beauty Palette", price: 6500, category: "Makeup", spec: "18 Eyeshadows", performance: 91, rating: 4.7, reviews: 7890, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 36, name: "Too Faced Better Than Sex", price: 3200, category: "Makeup", spec: "Volume Mascara", performance: 85, rating: 4.6, reviews: 14567, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 37, name: "Stila Stay All Day", price: 2500, category: "Makeup", spec: "Waterproof Liner", performance: 87, rating: 4.8, reviews: 10234, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 38, name: "Bobbi Brown Lip Color", price: 3500, category: "Makeup", spec: "Creamy Matte", performance: 83, rating: 4.5, reviews: 6789, image: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=500" },
+        { id: 39, name: "Pat McGrath Luxe", price: 14500, category: "Makeup", spec: "10 Luxury Shadows", performance: 96, rating: 4.9, reviews: 4321, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 40, name: "Laura Mercier Powder", price: 4200, category: "Makeup", spec: "Setting Powder", performance: 88, rating: 4.7, reviews: 11234, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 41, name: "NYX Epic Ink Liner", price: 650, category: "Makeup", spec: "Waterproof Black", performance: 74, rating: 4.5, reviews: 19876, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 42, name: "e.l.f. Putty Primer", price: 850, category: "Makeup", spec: "Blurring Formula", performance: 77, rating: 4.6, reviews: 17654, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 43, name: "Hourglass Veil", price: 5800, category: "Makeup", spec: "Mineral Primer", performance: 90, rating: 4.7, reviews: 6543, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 44, name: "Glossier Cloud Paint", price: 2200, category: "Makeup", spec: "Dewy Blush", performance: 82, rating: 4.6, reviews: 9876, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 45, name: "Milk Kush Mascara", price: 3200, category: "Makeup", spec: "Vegan Volume", performance: 84, rating: 4.5, reviews: 7890, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 46, name: "Morphe Artistry", price: 4500, category: "Makeup", spec: "39 Shadows", performance: 86, rating: 4.4, reviews: 15432, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 47, name: "Tarte Shape Tape", price: 3500, category: "Makeup", spec: "Full Coverage", performance: 89, rating: 4.8, reviews: 14567, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 48, name: "Kat Von D Liner", price: 2800, category: "Makeup", spec: "Tattoo Precision", performance: 88, rating: 4.7, reviews: 11234, image: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500" },
+        { id: 49, name: "Beauty Blender", price: 2200, category: "Tools", spec: "Sponge Original", performance: 85, rating: 4.7, reviews: 13456, image: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=500" },
+
+        // FRAGRANCE (20 items)
+        { id: 50, name: "Dior Sauvage EDP", price: 9200, category: "Fragrance", spec: "100ml Premium", performance: 94, rating: 4.8, reviews: 11234, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 51, name: "Chanel No. 5", price: 12500, category: "Fragrance", spec: "100ml Iconic", performance: 96, rating: 4.9, reviews: 8765, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 52, name: "Tom Ford Noir", price: 18500, category: "Fragrance", spec: "100ml Extreme", performance: 95, rating: 4.8, reviews: 5432, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 53, name: "Versace Eros", price: 7800, category: "Fragrance", spec: "100ml EDT", performance: 88, rating: 4.6, reviews: 9876, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 54, name: "YSL Black Opium", price: 11500, category: "Fragrance", spec: "90ml EDP", performance: 92, rating: 4.7, reviews: 12345, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 55, name: "Viktor & Rolf Flowerbomb", price: 13200, category: "Fragrance", spec: "100ml EDP", performance: 93, rating: 4.8, reviews: 7654, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 56, name: "Creed Aventus", price: 32500, category: "Fragrance", spec: "100ml Luxury", performance: 98, rating: 4.9, reviews: 4321, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 57, name: "Jo Malone Sea Salt", price: 14500, category: "Fragrance", spec: "100ml Cologne", performance: 85, rating: 4.6, reviews: 6543, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 58, name: "Marc Jacobs Daisy", price: 9800, category: "Fragrance", spec: "100ml Fresh", performance: 86, rating: 4.5, reviews: 10234, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 59, name: "Paco Rabanne 1 Million", price: 8500, category: "Fragrance", spec: "100ml Spicy", performance: 89, rating: 4.6, reviews: 11234, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 60, name: "Lancôme La Vie Est Belle", price: 11800, category: "Fragrance", spec: "100ml EDP", performance: 91, rating: 4.7, reviews: 8765, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 61, name: "Gucci Bloom", price: 10500, category: "Fragrance", spec: "100ml White Floral", performance: 88, rating: 4.6, reviews: 7890, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 62, name: "CK One", price: 4200, category: "Fragrance", spec: "200ml Citrus", performance: 75, rating: 4.3, reviews: 15432, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 63, name: "D&G Light Blue", price: 8800, category: "Fragrance", spec: "100ml EDT", performance: 84, rating: 4.5, reviews: 12345, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 64, name: "Burberry Her", price: 9500, category: "Fragrance", spec: "100ml EDP", performance: 87, rating: 4.6, reviews: 6789, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 65, name: "Armani Acqua di Gio", price: 8200, category: "Fragrance", spec: "100ml Marine", performance: 86, rating: 4.7, reviews: 13456, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 66, name: "Margiela Replica", price: 13500, category: "Fragrance", spec: "100ml Beach Walk", performance: 82, rating: 4.4, reviews: 5432, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 67, name: "Carolina Herrera Good Girl", price: 10800, category: "Fragrance", spec: "80ml EDP", performance: 90, rating: 4.7, reviews: 8765, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 68, name: "Mugler Angel", price: 11200, category: "Fragrance", spec: "100ml Praline", performance: 93, rating: 4.5, reviews: 6543, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+        { id: 69, name: "Le Labo Santal 33", price: 24500, category: "Fragrance", spec: "100ml Woody", performance: 94, rating: 4.8, reviews: 4321, image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500" },
+
+        // HAIRCARE (15 items)
+        { id: 70, name: "Olaplex No. 3", price: 3200, category: "Haircare", spec: "Bond Perfector", performance: 92, rating: 4.8, reviews: 14567, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
+        { id: 71, name: "Dyson Airwrap", price: 45900, category: "Tools", spec: "Multi-Styler", performance: 96, rating: 4.7, reviews: 6543, image: "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=500" },
+        { id: 72, name: "Moroccanoil Treatment", price: 3800, category: "Haircare", spec: "Argan Oil 100ml", performance: 88, rating: 4.6, reviews: 11234, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
+        { id: 73, name: "Living Proof PhD", price: 3200, category: "Haircare", spec: "Styling Shampoo", performance: 85, rating: 4.5, reviews: 8765, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
+        { id: 74, name: "Kerastase Mask", price: 4500, category: "Haircare", spec: "Resistance Repair", performance: 90, rating: 4.7, reviews: 7890, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
+        { id: 75, name: "Christophe Robin Scrub", price: 5200, category: "Haircare", spec: "Sea Salt Scalp", performance: 86, rating: 4.6, reviews: 5432, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
+        { id: 76, name: "Ouai Wave Spray", price: 2800, category: "Haircare", spec: "Beach Texture", performance: 82, rating: 4.4, reviews: 9876, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
+        { id: 77, name: "Briogeo Mask", price: 4200, category: "Haircare", spec: "Don't Despair", performance: 87, rating: 4.6, reviews: 6789, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
+        { id: 78, name: "GHD Platinum+", price: 28500, category: "Tools", spec: "Smart Styler", performance: 94, rating: 4.8, reviews: 7654, image: "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=500" },
+        { id: 79, name: "Bumble Oil", price: 4800, category: "Haircare", spec: "Invisible 100ml", performance: 84, rating: 4.5, reviews: 5432, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
+        { id: 80, name: "Verb Ghost Oil", price: 2200, category: "Haircare", spec: "Weightless 100ml", performance: 80, rating: 4.4, reviews: 8765, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
+        { id: 81, name: "Redken Acidic Bond", price: 3500, category: "Haircare", spec: "pH Balancing", performance: 89, rating: 4.7, reviews: 6543, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
+        { id: 82, name: "Amika The Kure", price: 2800, category: "Haircare", spec: "Repair Shampoo", performance: 83, rating: 4.5, reviews: 7890, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
+        { id: 83, name: "K18 Leave-In", price: 6500, category: "Haircare", spec: "Molecular Repair", performance: 95, rating: 4.9, reviews: 9876, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
+        { id: 84, name: "T3 AireLuxe Dryer", price: 22500, category: "Tools", spec: "IonAir Pro", performance: 91, rating: 4.6, reviews: 4321, image: "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=500" }
+    ];
+
+    let registry = products.map(p => ({ ...p, qty: 0, review: "" }));
+
+    function updateClock() { document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('en-IN', { hour12: false }); }
+    setInterval(updateClock, 1000);
+
+    function updatePriceLabel() {
+        document.getElementById('price-val').innerText = parseInt(document.getElementById('price-range').value).toLocaleString('en-IN');
+        filterProducts();
+    }
+
+    // --- ELITE CART ENGINE ---
+    function syncToGlobalCart() {
+        let globalCart = JSON.parse(localStorage.getItem('cart')) || [];
+        const localActive = registry.filter(p => p.qty > 0).map(p => ({
+            name: p.name, price: p.price, qty: p.qty
+        }));
+        const otherCategoryItems = globalCart.filter(gItem => !registry.some(rItem => rItem.name === gItem.name));
+        const finalCart = [...otherCategoryItems, ...localActive];
+        localStorage.setItem('cart', JSON.stringify(finalCart));
+        document.getElementById('cart-count').innerText = finalCart.reduce((acc, item) => acc + item.qty, 0);
+    }
+
+    function filterProducts() {
+        const query = document.getElementById('search-input').value.toLowerCase();
+        const max = parseInt(document.getElementById('price-range').value);
+        const sortBy = document.getElementById('sort-select').value;
+        const selectedCats = Array.from(document.querySelectorAll('.cat-check:checked')).map(cb => cb.value);
+        let filtered = registry.filter(p => {
+            const matchesSearch = p.name.toLowerCase().includes(query) || p.spec.toLowerCase().includes(query);
+            return matchesSearch && p.price <= max && selectedCats.includes(p.category);
+        });
+        if(sortBy === 'price-low') filtered.sort((a,b)=>a.price-b.price);
+        if(sortBy === 'price-high') filtered.sort((a,b)=>b.price-a.price);
+        renderProducts(filtered);
+    }
+
+    function updateItem(id, key, val) {
+        const item = registry.find(p => p.id === id);
+        item[key] = val;
+        syncToGlobalCart();
+        updateSummary();
+        renderProducts();
+    }
+
+    function renderProducts(list = registry) {
+        const container = document.getElementById("product-list");
+        container.innerHTML = list.map((p) => `
+            <div class="marketplace-card">
+                <div class="relative bg-white h-44 flex items-center justify-center p-6"><img src="${p.image}" class="max-h-full"></div>
+                <div class="p-5 flex-1 bg-black">
+                    <span class="text-[9px] font-bold text-amber-400 uppercase">${p.category}</span>
+                    <h3 class="text-xs font-bold text-white uppercase">${p.name}</h3>
+                    <div class="benchmark-bar"><div class="benchmark-fill" style="width: ${p.performance}%"></div></div>
+                    <p class="text-[9px] font-mono text-white/30 mt-2">${p.spec}</p>
+                </div>
+                <div class="qty-node">
+                    <div onclick="updateItem(${p.id}, 'qty', Math.max(0, ${p.qty - 1}))" class="qty-btn"><i class="fas fa-minus text-[10px]"></i></div>
+                    <span class="w-12 text-center text-white font-mono">${p.qty}</span>
+                    <div onclick="updateItem(${p.id}, 'qty', ${p.qty + 1})" class="qty-btn"><i class="fas fa-plus text-[10px]"></i></div>
+                </div>
+                <div class="price-priority-box">₹${p.price.toLocaleString('en-IN')}</div>
+            </div>`).join("");
+    }
+
+    function updateSummary() {
+        const activeItems = registry.filter(p => p.qty > 0);
+        const container = document.getElementById("summary-items");
+        if(activeItems.length === 0) {
+            container.innerHTML = `<p class="text-[10px] text-white/20 uppercase text-center py-10">REGISTRY EMPTY</p>`;
+            document.getElementById("total-price").innerText = "₹0";
+            return;
+        }
+        container.innerHTML = activeItems.map(p => `
+            <div class="bg-white/5 p-3 rounded-lg border border-white/10 mb-2">
+                <div class="flex justify-between items-start"><span class="text-[10px] font-bold text-white uppercase">${p.name}</span><span class="text-[10px] font-mono text-amber-400">x${p.qty}</span></div>
+            </div>`).join("");
+        const total = activeItems.reduce((acc, p) => acc + (p.price * p.qty), 0);
+        document.getElementById("total-price").innerText = `₹${total.toLocaleString('en-IN')}`;
+    }
+
+    function secureEntry() { syncToGlobalCart(); window.location.href = "checkout.html"; }
+    function toggleFilter() { document.getElementById("filter-content").classList.toggle("collapsed"); }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const globalCart = JSON.parse(localStorage.getItem('cart')) || [];
+        globalCart.forEach(gItem => {
+            const localMatch = registry.find(rItem => rItem.name === gItem.name);
+            if(localMatch) localMatch.qty = gItem.qty;
+        });
+        renderProducts(); updateSummary(); updateClock(); syncToGlobalCart();
+    });
+</script>
+</body>
+</html>

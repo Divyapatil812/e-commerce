@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoCommerce | Session End</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@200;400;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { --gold: #f59e0b; --bg: #050505; }
+        
+        body { 
+            background-color: var(--bg); color: #fff; 
+            font-family: 'Outfit', sans-serif; 
+            height: 100vh; overflow: hidden; 
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .system-bg { 
+            position: fixed; inset: 0; z-index: -1; 
+            background: radial-gradient(circle at center, #151515 0%, #000 100%);
+        }
+
+        .terminal-panel {
+            width: 85vw; max-width: 900px;
+            background: rgba(15, 15, 15, 0.95);
+            border-top: 3px solid var(--gold);
+            border-radius: 8px;
+            backdrop-filter: blur(30px);
+            padding: 3.5rem; position: relative;
+            box-shadow: 0 40px 100px rgba(0,0,0,1);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .viz-box { display: flex; align-items: center; gap: 6px; height: 30px; margin-bottom: 1.5rem; }
+        .viz-bar { width: 3px; height: 10px; background: var(--gold); border-radius: 50px; }
+        .viz-bar.active { animation: bar-dance 1s infinite ease-in-out; }
+        @keyframes bar-dance { 0%, 100% { height: 10px; opacity: 0.3; } 50% { height: 30px; opacity: 1; } }
+
+        .brand-header { font-family: 'Syncopate', sans-serif; letter-spacing: 10px; font-weight: 700; color: var(--gold); font-size: 10px; }
+        .message-text { font-size: 1.1rem; line-height: 1.8; color: #e2e8f0; font-weight: 300; }
+        
+        .btn-close {
+            background: white; color: black; font-family: 'Syncopate', sans-serif;
+            font-size: 10px; font-weight: 700; letter-spacing: 4px; padding: 20px 40px;
+            border-radius: 4px; transition: 0.4s; width: 100%;
+        }
+        .btn-close:hover { background: var(--gold); letter-spacing: 6px; }
+    </style>
+</head>
+<body onload="startClosure()">
+
+    <div class="system-bg"></div>
+
+    <div class="terminal-panel">
+        <div class="flex justify-between items-center mb-10 border-b border-white/5 pb-6">
+            <div>
+                <p class="brand-header uppercase mb-1">Session Termination</p>
+                <h2 class="text-3xl font-black tracking-tight uppercase">User: <span id="user-display">CHETHU</span></h2>
+            </div>
+            <div class="text-right">
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest">Status: Ready</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div class="lg:col-span-2">
+                <div class="viz-box" id="viz-bars">
+                    <div class="viz-bar active" style="animation-delay: 0.1s"></div>
+                    <div class="viz-bar active" style="animation-delay: 0.2s"></div>
+                    <div class="viz-bar active" style="animation-delay: 0.3s"></div>
+                    <div class="viz-bar active" style="animation-delay: 0.4s"></div>
+                    <div class="viz-bar active" style="animation-delay: 0.3s"></div>
+                </div>
+                <div class="message-text italic">
+                    <span id="ai-message">Initializing...</span>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div id="choice-preview" class="hidden p-6 bg-white/5 border border-white/10 rounded-lg">
+                    <p class="text-[9px] font-black uppercase text-amber-500 mb-2 tracking-widest">Your Choice</p>
+                    <p id="item-name" class="text-lg font-bold text-white uppercase leading-tight"></p>
+                </div>
+                <div class="p-6 bg-white/5 border border-white/10 rounded-lg">
+                    <p class="text-[9px] font-black uppercase text-slate-500 mb-2 tracking-widest">About NeoCommerce</p>
+                    <p class="text-[11px] text-slate-400 font-light leading-relaxed">Thank you for visiting the Digital Frontier. We value your feedback and look forward to your next session.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="exit-action" class="mt-12 opacity-0 transition-opacity duration-1000">
+            <button onclick="window.location.href='WELCOME.HTML'" class="btn-close uppercase">
+                Close Connection
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function startClosure() {
+            setTimeout(processFinalReport, 800);
+        }
+
+        function processFinalReport() {
+            // Get user data
+            const rawID = sessionStorage.getItem('lastLoginID') || "CHETHU7890";
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const user = rawID.toUpperCase().includes('CHETHU') ? "Chethu" : rawID;
+            
+            document.getElementById('user-display').innerText = user;
+
+            let closureText = "";
+            if (cart.length > 0) {
+                const product = cart[cart.length - 1].name;
+                document.getElementById('choice-preview').classList.remove('hidden');
+                document.getElementById('item-name').innerText = product;
+                
+                closureText = `Hi ${user}. I have reviewed your session and I must say, your choice of the ${product} is excellent. It is a fantastic selection and I am very happy you found it today. Thank you for shopping with NeoCommerce, it was a pleasure to assist you. See you again soon.`;
+            } else {
+                closureText = `Hi ${user}. Thank you for spending time with NeoCommerce today. I hope you enjoyed exploring our latest collections. We really appreciate your visit and I look forward to seeing you again. Have a wonderful day.`;
+            }
+
+            // --- FEMALE AI VOICE ---
+            const synth = window.speechSynthesis;
+            const msg = new SpeechSynthesisUtterance(closureText);
+            const voices = synth.getVoices();
+            const female = voices.find(v => v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Samantha'));
+            
+            if (female) msg.voice = female;
+            msg.rate = 0.95; 
+            msg.pitch = 1.1; 
+            synth.speak(msg);
+
+            // --- TYPING EFFECT ---
+            let i = 0;
+            const target = document.getElementById('ai-message');
+            target.innerText = "";
+
+            function typing() {
+                if (i < closureText.length) {
+                    target.innerHTML += closureText.charAt(i);
+                    i++;
+                    setTimeout(typing, 30);
+                } else {
+                    document.getElementById('viz-bars').style.opacity = '0.2';
+                    document.getElementById('exit-action').classList.remove('opacity-0');
+                    
+                    // Final Secure Wipe
+                    localStorage.clear();
+                    sessionStorage.clear();
+                }
+            }
+            typing();
+        }
+
+        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    </script>
+</body>
+</html>

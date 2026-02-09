@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoCommerce | Secure Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=JetBrains+Mono:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { 
+            --gold: #f59e0b;
+            --gold-bright: #fbce44;
+            --deep-black: #050505;
+            --success: #00ff88;
+            --error: #ff4444;
+        }
+
+        body { 
+            font-family: 'JetBrains Mono', monospace; 
+            background-color: var(--deep-black); 
+            color: #fff; margin: 0; overflow: hidden; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* --- STYLIZED BACKGROUND --- */
+        .bg-canvas {
+            position: fixed; inset: 0; z-index: -1;
+            background: radial-gradient(circle at center, #1a1200 0%, #000 100%);
+        }
+
+        /* Scanning Line Effect */
+        .scanline {
+            width: 100%; height: 100px; z-index: 10;
+            background: linear-gradient(0deg, rgba(245, 158, 11, 0.05) 0%, transparent 100%);
+            position: absolute; top: -100px; left: 0;
+            animation: scanning 4s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scanning {
+            0% { top: -100px; }
+            100% { top: 100%; }
+        }
+
+        /* --- THE SLATE PANEL --- */
+        .slate-panel {
+            background: rgba(10, 10, 10, 0.9);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            width: 100%; max-width: 450px; 
+            padding: 3.5rem; position: relative;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 60px rgba(0,0,0,1);
+            clip-path: polygon(0 0, 90% 0, 100% 10%, 100% 100%, 10% 100%, 0 90%);
+            transition: all 0.3s ease;
+        }
+
+        .brand-logo {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 2.5rem; line-height: 1;
+            background: linear-gradient(90deg, #fff, var(--gold), #fff);
+            background-size: 200%;
+            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+        }
+
+        @keyframes shine { to { background-position: 200% center; } }
+
+        .input-box {
+            width: 100%; background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            padding: 1.25rem; margin-bottom: 1.25rem;
+            color: var(--gold-bright); outline: none;
+            transition: all 0.3s ease;
+        }
+        .input-box:focus {
+            border-color: var(--gold);
+            background: rgba(245, 158, 11, 0.08);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
+        }
+
+        .btn-execute {
+            width: 100%; padding: 1.25rem; font-weight: 800;
+            background: var(--gold); color: #000;
+            text-transform: uppercase; letter-spacing: 4px;
+            cursor: pointer; transition: 0.4s; border: none;
+        }
+        .btn-execute:hover {
+            background: #fff; letter-spacing: 6px;
+            box-shadow: 0 0 30px rgba(255,255,255,0.2);
+        }
+
+        /* --- REDIRECT LOADER --- */
+        #redirect-loader {
+            position: fixed; inset: 0; background: #000; z-index: 1000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .spinner-box {
+            position: relative; width: 200px; height: 200px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .circle-ring {
+            position: absolute; width: 100%; height: 100%;
+            border: 2px solid rgba(245, 158, 11, 0.1);
+            border-top: 2px solid var(--gold);
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        #load-val { font-size: 3rem; font-weight: 800; color: #fff; }
+
+        /* SUCCESS STATE */
+        #verified-check {
+            display: none; font-size: 6rem; color: var(--success);
+            filter: drop-shadow(0 0 25px var(--success));
+            animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .status-footer {
+            margin-top: 2.5rem; text-align: center;
+            font-size: 11px; letter-spacing: 6px; text-transform: uppercase;
+        }
+
+        .verified-text { color: var(--success); font-weight: 800; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-canvas"></div>
+    <div class="scanline"></div>
+
+    <div class="slate-panel">
+        <div class="flex justify-between items-center mb-10 border-b border-white/10 pb-4">
+            <span class="text-[9px] text-amber-500/60 uppercase tracking-widest">System: Online</span>
+            <span class="text-[10px] text-amber-500 font-bold" id="timer">00:00:00</span>
+        </div>
+
+        <h1 class="brand-logo mb-10">NEO<br>COMMERCE</h1>
+
+        <form id="loginForm">
+            <input type="text" id="userID" placeholder="IDENTITY_TOKEN" required class="input-box">
+            <input type="password" id="userPass" placeholder="SECURITY_PHRASE" required class="input-box">
+            <button type="submit" class="btn-execute">Initialize Link</button>
+        </form>
+
+        <div class="mt-10 text-center opacity-30 text-[8px] tracking-[0.5em] uppercase">
+            Secure Node: X-771 // Auth v2.4
+        </div>
+    </div>
+
+    <div id="redirect-loader">
+        <div class="spinner-box">
+            <div class="circle-ring" id="ring"></div>
+            <div id="load-val">00</div>
+            <i id="verified-check" class="fas fa-check-double"></i>
+        </div>
+        
+        <div class="status-footer">
+            <span id="msg-text" class="text-amber-500">Decrypting Credentials</span>
+        </div>
+    </div>
+
+    <script>
+        // System Timer
+        setInterval(() => {
+            const timerEl = document.getElementById('timer');
+            if(timerEl) timerEl.innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        // Sequence Trigger
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get the inputs
+            const inputID = document.getElementById('userID').value;
+            const inputPass = document.getElementById('userPass').value;
+            
+            // --- VALIDATION CHECK: HARDCODED CREDENTIALS ---
+            if (inputID === "CHETHU" && inputPass === "CHETHU7890") {
+                // SUCCESS: Run the loading sequence
+                startLoginSequence();
+            } else {
+                // DENY: Visual feedback and alert
+                triggerDenialEffect();
+            }
+        });
+
+        function triggerDenialEffect() {
+            const panel = document.querySelector('.slate-panel');
+            panel.style.borderColor = "var(--error)";
+            panel.style.boxShadow = "0 0 40px rgba(255, 68, 68, 0.4)";
+            
+            alert("CRITICAL ERROR: IDENTITY NOT RECOGNIZED. ACCESS DENIED.");
+            
+            setTimeout(() => {
+                panel.style.borderColor = "rgba(245, 158, 11, 0.4)";
+                panel.style.boxShadow = "0 0 60px rgba(0,0,0,1)";
+            }, 1000);
+        }
+
+        function startLoginSequence() {
+            const loader = document.getElementById('redirect-loader');
+            const val = document.getElementById('load-val');
+            const ring = document.getElementById('ring');
+            const check = document.getElementById('verified-check');
+            const msg = document.getElementById('msg-text');
+
+            loader.style.display = 'flex';
+            
+            let progress = 0;
+            const process = setInterval(() => {
+                progress += Math.floor(Math.random() * 8) + 3;
+                
+                if(progress >= 100) {
+                    progress = 100;
+                    clearInterval(process);
+                    
+                    // Step 1: Verified state
+                    val.style.display = 'none';
+                    ring.style.display = 'none';
+                    check.style.display = 'block';
+                    msg.innerHTML = '<span class="verified-text">IDENTITY VERIFIED</span>';
+                    
+                    // Step 2: Dashboard Redirection msg
+                    setTimeout(() => {
+                        msg.innerText = "REDIRECTING TO DASHBOARD...";
+                        msg.style.color = "#fff";
+                        msg.style.letterSpacing = "2px";
+                    }, 1000);
+
+                    // Step 3: Final Jump
+                    setTimeout(() => {
+                        window.location.href = "home.html"; 
+                    }, 2500);
+                }
+                val.innerText = progress.toString().padStart(2, '0');
+                
+                // Dynamic messages during load
+                if(progress > 30 && progress < 60) msg.innerText = "VALIDATING BIO-SIGNATURE";
+                if(progress > 60 && progress < 90) msg.innerText = "ESTABLISHING SECURE TUNNEL";
+            }, 100);
+        }
+
+        function handleLogin() {
+            const name = document.getElementById('login-id').value;
+            if(name) {
+                // 1. Establish Session in Shared Memory
+                localStorage.setItem('neo_user', name);
+                
+                // 2. Redirect to Product Mall
+                window.location.href = "home.html";
+            } else {
+                alert("ACCESS_DENIED: Invalid Operator Credentials");
+            }
+        }
+    </script>
+</body>
+</html>

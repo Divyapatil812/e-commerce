@@ -1,0 +1,75 @@
+:root {
+    --neon-gold: #fbbf24;
+    --bg-dark: #050505;
+}
+
+.transaction-wrapper {
+    min-height: 100vh;
+    background-color: var(--bg-dark);
+    color: white;
+    padding-top: 100px;
+    position: relative;
+}
+
+.myntra-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    max-width: 1100px;
+    margin: 0 auto;
+    background: rgba(18, 18, 18, 0.9);
+    border: 1px solid rgba(251, 191, 36, 0.1);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.payment-left { padding: 40px; border-right: 1px solid rgba(255,255,255,0.05); }
+.price-right { padding: 40px; background: rgba(255,255,255,0.02); }
+
+.price-header-gold { color: var(--neon-gold); font-weight: 800; margin-bottom: 20px; letter-spacing: 1px; }
+
+.price-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; }
+.total-row { margin-top: 20px; padding-top: 20px; border-top: 1px dashed rgba(251, 191, 36, 0.3); }
+.total-value-white { color: var(--neon-gold); font-size: 1.5rem; font-weight: 900; }
+
+.pink-pay-btn {
+    width: 100%;
+    padding: 18px;
+    background: var(--neon-gold);
+    color: black;
+    border-radius: 12px;
+    font-weight: 900;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.qr-code-img {
+    width: 180px;
+    margin: 20px auto;
+    display: block;
+    padding: 10px;
+    background: white;
+    border-radius: 10px;
+}
+
+/* SUCCESS OVERLAY */
+.success-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.95); z-index: 1000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+
+.visit-again-note {
+    color: var(--neon-gold);
+    font-style: italic;
+    font-size: 1.2rem;
+    margin-top: 15px;
+    animation: fadeIn 2s ease-in;
+}
+
+/* VERTICAL TIMELINE */
+.vertical-timeline { position: relative; padding-left: 30px; }
+.timeline-item { position: relative; margin-bottom: 40px; opacity: 0.3; transition: 0.5s; }
+.timeline-item.active { opacity: 1; color: var(--neon-gold); }
+.marker-dot { width: 12px; height: 12px; background: var(--neon-gold); border-radius: 50%; position: absolute; left: -36px; top: 5px; }
+.marker-line { width: 2px; height: 50px; background: rgba(251, 191, 36, 0.2); position: absolute; left: -31px; top: 17px; }

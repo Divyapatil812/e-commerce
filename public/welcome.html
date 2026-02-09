@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoCommerce | Operational Gateway</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --neon-gold: #fbbf24; --bg-dark: #050505; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: #f8fafc; margin: 0; overflow-x: hidden; }
+
+        /* Tech Grid Background */
+        .grid-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(251, 191, 36, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(251, 191, 36, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px; z-index: -1;
+            mask-image: radial-gradient(circle at center, black, transparent 90%);
+        }
+
+        @keyframes reveal {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-reveal { animation: reveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        .gradient-text { background: linear-gradient(to right, #ffffff, #fbbf24); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .animate-marquee { display: inline-block; animation: marquee 25s linear infinite; }
+
+        .btn-elite {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+        .btn-elite:hover { transform: translateY(-3px); border-color: var(--neon-gold); box-shadow: 0 15px 30px rgba(251, 191, 36, 0.1); }
+        
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .status-online { background: #10b981; box-shadow: 0 0 10px #10b981; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <div class="grid-bg"></div>
+
+    <header class="fixed top-0 w-full z-50">
+        <div class="bg-amber-500 text-black py-1.5 overflow-hidden whitespace-nowrap border-b border-black/10">
+            <div class="animate-marquee px-4 font-black uppercase text-[9px] tracking-[0.2em]">
+                <span class="mx-10">TECH: 20% OFF ALL LAPTOPS</span>
+                <span class="mx-10">BEAUTY: NEURAL GLOW DROP LIVE</span>
+                <span class="mx-10">FASHION: LUXURY BATCH SYNCED</span>
+                <span class="mx-10">HEALTH: SUPPLEMENT POOL ACTIVE</span>
+                <span class="mx-10">TECH: 20% OFF ALL LAPTOPS</span>
+                <span class="mx-10">BEAUTY: NEURAL GLOW DROP LIVE</span>
+            </div>
+        </div>
+        
+        <div class="px-8 py-4 flex justify-between items-center backdrop-blur-2xl bg-black/40 border-b border-white/5">
+            <div class="flex items-center gap-5">
+                <p id="current-date" class="text-[9px] font-black text-slate-500 uppercase tracking-widest"></p>
+                <div class="h-3 w-[1px] bg-white/10"></div>
+                <div class="flex items-center">
+                    <span class="status-dot status-online animate-pulse"></span>
+                    <p id="current-loc" class="text-[9px] font-black text-amber-500 uppercase tracking-widest italic">SYNCHRONIZING...</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="text-right">
+                    <p id="current-time" class="text-[10px] font-mono font-black text-white"></p>
+                    <p id="user-status" class="text-[7px] text-slate-500 font-bold uppercase tracking-widest">Guest_Session</p>
+                </div>
+                <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
+                    <i class="fas fa-fingerprint text-sm"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 flex flex-col items-center justify-center text-center px-6 pt-24">
+        <div class="animate-reveal max-w-5xl">
+            <span class="text-amber-500/60 font-black uppercase text-[10px] tracking-[0.6em] mb-6 block">Established Core 2026</span>
+            
+            <h1 class="text-6xl md:text-8xl lg:text-9xl font-extrabold leading-tight mb-8 tracking-tighter">
+                Welcome to <br><span class="gradient-text">NeoCommerce.</span>
+            </h1>
+
+            <p class="text-slate-400 text-sm md:text-lg font-medium italic max-w-3xl mx-auto mb-12 leading-relaxed border-l-2 border-amber-500/20 pl-6">
+                Automated e-commerce bridging <span class="text-white">user-centric retail</span> with <span class="text-amber-500">efficient backend management</span> and full data control.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                <button onclick="window.location.href = 'login.html';" class="btn-elite w-64 py-4 bg-amber-500 text-black rounded-xl font-black uppercase text-[11px] tracking-widest">
+                    Initialize Login
+                </button>
+                
+                <button onclick="window.location.href = '/?mode=signup';" class="btn-elite w-64 py-4 bg-white/5 backdrop-blur-xl text-white rounded-xl font-black uppercase text-[11px] tracking-widest hover:bg-white hover:text-black">
+                    Register Node
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="p-8 border-t border-white/5 text-center">
+        <p class="text-[8px] text-slate-600 font-bold uppercase tracking-[0.5em]">
+            Secure Enterprise Protocol // GST Compliant // Independent Data Sovereignty
+        </p>
+    </footer>
+
+    <script>
+        function updateSystemData() {
+            const now = new Date();
+            document.getElementById('current-time').innerText = now.toLocaleTimeString('en-US', { hour12: false });
+            document.getElementById('current-date').innerText = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+            
+            // Sync user from React memory if logged in
+            const savedUser = localStorage.getItem('neo_user');
+            if(savedUser) {
+                document.getElementById('user-status').innerText = `Operator: ${savedUser}`;
+            }
+
+            if (navigator.geolocation && !window.locFound) {
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    const lat = pos.coords.latitude.toFixed(2);
+                    const lon = pos.coords.longitude.toFixed(2);
+                    
+                    // Display coordinates immediately
+                    document.getElementById('current-loc').innerText = `NODE_ACTIVE: [${lat}N, ${lon}E]`;
+                    
+                    try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+                        const data = await res.json();
+                        const city = data.address.city || data.address.town || "REGIONAL HUB";
+                        document.getElementById('current-loc').innerText = `${city.toUpperCase()} NODE: [${lat}N, ${lon}E]`;
+                        window.locFound = true;
+                    } catch (e) { 
+                        // Fail silently if reverse-geocoding fails
+                    }
+                });
+            }
+        }
+        setInterval(updateSystemData, 1000);
+        updateSystemData();
+    </script>
+</body>
+</html>

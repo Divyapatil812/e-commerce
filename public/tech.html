@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neo Tech | Electronics Registry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --neon-gold: #fbbf24; --bg-dark: #050505; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: #f8fafc; margin: 0; overflow-x: hidden; }
+        .grid-bg { position: fixed; inset: 0; background-image: linear-gradient(rgba(251,191,36,0.02) 1px,transparent 1px), linear-gradient(90deg,rgba(251,191,36,0.02) 1px,transparent 1px); background-size: 50px 50px; z-index: -1; mask-image: radial-gradient(circle at center, black, transparent 90%); }
+        .marketplace-card { background: #0a0a0a; border-radius: 16px; border: 1px solid #1a1a1a; transition: 0.3s cubic-bezier(0.23, 1, 0.32, 1); overflow: hidden; display: flex; flex-direction: column; height: 100%; position: relative; }
+        .marketplace-card:hover { border-color: var(--neon-gold); transform: translateY(-3px); }
+        .price-priority-box { background: #fff; color: #000; font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 800; padding: 0.7rem 1rem; text-align: center; width: 100%; border-top: 1px solid var(--neon-gold); }
+        .official-nav { background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #1a1a1a; }
+        .qty-node { background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; border-top: 1px solid #1a1a1a; }
+        .qty-btn { padding: 10px 18px; transition: 0.2s; color: var(--neon-gold); font-weight: bold; cursor: pointer; }
+        .qty-btn:hover { background: var(--neon-gold); color: black; }
+        .nav-btn { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; padding: 8px 16px; border-radius: 8px; font-weight: bold; text-decoration: none; transition: all 0.3s; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(251,191,36,0.4); }
+        .filter-checkbox { width: 14px; height: 14px; accent-color: #fbbf24; cursor: pointer; }
+        .summary-panel { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 16px; padding: 24px; position: sticky; top: 110px; max-height: 80vh; display: flex; flex-direction: column; }
+        .benchmark-bar { height: 2px; background: #222; width: 100%; border-radius: 2px; margin-top: 4px; overflow: hidden; }
+        .benchmark-fill { height: 100%; background: var(--neon-gold); box-shadow: 0 0 10px var(--neon-gold); transition: width 1s ease-out; }
+    </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<nav class="official-nav flex items-center justify-between py-5 px-10 sticky top-0 z-50">
+   <div class="text-3xl font-black italic tracking-tighter elite-title">NEOBEAUTY</div>
+    
+    <div class="flex-grow max-w-[400px] relative hidden md:block mx-10">
+        <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="Search Tech Nodes..." class="w-full bg-white/5 border border-white/10 px-10 py-2 rounded-full outline-none text-xs text-white focus:border-amber-400">
+    </div>
+    <div class="flex gap-8 text-white font-bold text-sm items-center">
+        <a href="home.html" class="nav-btn"><i class="fas fa-home mr-2"></i>Home</a>
+        <a href="checkout.html" class="nav-btn"><i class="fas fa-shopping-cart mr-2"></i>Checkout</a>
+        <div class="hidden sm:flex flex-col items-end pr-6 border-r border-white/10">
+            <span class="text-[8px] uppercase tracking-widest text-white/30">System Time</span>
+            <span id="live-clock" class="font-mono text-white text-lg">00:00:00</span>
+        </div>
+        <div onclick="window.location.href='checkout.html'" class="relative cursor-pointer">
+            <i class="fas fa-shopping-bag text-amber-400 text-xl"></i>
+            <span id="cart-count" class="absolute -top-3 -right-3 bg-white text-black text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black">0</span>
+        </div>
+    </div>
+</nav>
+
+<div class="container mx-auto px-6 py-10">
+    <div class="flex flex-col lg:flex-row gap-8">
+        <aside class="w-full lg:w-64 flex-shrink-0">
+            <div class="bg-[#0a0a0a] border border-[#1a1a1a] p-6 rounded-2xl sticky top-28">
+                <h3 class="font-black text-[10px] text-white/50 mb-3 italic uppercase">Categories</h3>
+                <div class="flex flex-col gap-3 text-[11px]">
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Mobile" class="cat-check" onchange="filterProducts()" checked> Mobile</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Laptop" class="cat-check" onchange="filterProducts()" checked> Laptop</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Audio" class="cat-check" onchange="filterProducts()" checked> Audio</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Gadget" class="cat-check" onchange="filterProducts()" checked> Wearables</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Camera" class="cat-check" onchange="filterProducts()" checked> Cameras</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Monitor" class="cat-check" onchange="filterProducts()" checked> Monitors</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Smart Home" class="cat-check" onchange="filterProducts()" checked> Smart Home</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Accessories" class="cat-check" onchange="filterProducts()" checked> Accessories</label>
+                </div>
+                <div class="mt-8">
+                    <p class="text-[9px] font-bold text-amber-400 uppercase mb-4 italic">Max Price: ₹<span id="price-val">800000</span></p>
+                    <input type="range" id="price-range" min="5000" max="800000" step="5000" value="800000" oninput="updatePriceLabel()" class="w-full accent-amber-400">
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-grow"><div id="product-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div></main>
+
+        <aside class="w-full lg:w-80 flex-shrink-0">
+            <div class="summary-panel">
+                <h2 class="font-black text-amber-400 text-[10px] uppercase tracking-[0.2em] mb-4">Registry Selection</h2>
+                <div id="summary-items" class="flex-grow overflow-y-auto space-y-4 mb-6 pr-2"></div>
+                <div class="border-t border-white/10 pt-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-white/40 text-[10px] uppercase font-bold tracking-widest">Tech Value</span>
+                        <span id="total-price" class="font-mono text-xl font-bold text-amber-400">₹0</span>
+                    </div>
+                    <button onclick="secureEntry()" class="w-full bg-white text-black py-4 mt-6 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-amber-400 transition-all">Go to Checkout</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+    const products = [
+        // MOBILE (30)
+        { id: 0, name: "iPhone 17 Pro Max", price: 159900, category: "Mobile", spec: "A19 Pro Chip, 1TB Titanium", performance: 95, rating: 4.5, reviews: 2341, image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500" },
+        { id: 1, name: "Samsung Galaxy S26 Ultra", price: 144999, category: "Mobile", spec: "Snapdragon 8 Gen 5, 200MP", performance: 92, rating: 4.3, reviews: 1876, image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500" },
+        { id: 2, name: "OnePlus 13 Pro", price: 64999, category: "Mobile", spec: "Snapdragon 8 Gen 4, 16GB RAM", performance: 88, rating: 4.2, reviews: 1543, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 3, name: "Xiaomi 14 Ultra", price: 79999, category: "Mobile", spec: "Leica Camera, 12GB RAM", performance: 90, rating: 4.1, reviews: 1234, image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500" },
+        { id: 4, name: "Vivo X100 Pro", price: 59999, category: "Mobile", spec: "Zeiss Optics, 256GB Storage", performance: 85, rating: 4.0, reviews: 987, image: "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=500" },
+        { id: 5, name: "Oppo Find X7 Ultra", price: 69999, category: "Mobile", spec: "Hasselblad Camera, 100W", performance: 87, rating: 4.2, reviews: 1123, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 6, name: "Realme GT 7 Pro", price: 44999, category: "Mobile", spec: "Dimensity 9200, 150W", performance: 82, rating: 3.9, reviews: 876, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 7, name: "iQOO 12", price: 42999, category: "Mobile", spec: "Snapdragon 8 Gen 3, 120Hz", performance: 84, rating: 4.1, reviews: 654, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 8, name: "Nothing Phone (3)", price: 39999, category: "Mobile", spec: "Glyph Interface, SD 8+ Gen 2", performance: 80, rating: 4.0, reviews: 1432, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 9, name: "Google Pixel 9 Pro", price: 89999, category: "Mobile", spec: "Tensor G4, AI Photo", performance: 86, rating: 4.3, reviews: 1876, image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500" },
+        { id: 10, name: "Redmi Note 13 Pro+", price: 29999, category: "Mobile", spec: "200MP, 120W Charge", performance: 78, rating: 4.1, reviews: 3456, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 11, name: "Poco X6 Pro", price: 24999, category: "Mobile", spec: "Dimensity 8300 Ultra", performance: 75, rating: 4.0, reviews: 2345, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 12, name: "Motorola Edge 50 Pro", price: 34999, category: "Mobile", spec: "SD 8 Gen 3, 125W Charge", performance: 83, rating: 4.2, reviews: 1234, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 13, name: "Infinix GT 10 Pro", price: 19999, category: "Mobile", spec: "Dimensity 8050, 45W", performance: 72, rating: 3.8, reviews: 876, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 14, name: "Tecno Phantom X2", price: 27999, category: "Mobile", spec: "Dimensity 9000, 45W", performance: 76, rating: 3.9, reviews: 654, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 15, name: "Asus ROG Phone 8", price: 89999, category: "Mobile", spec: "SD 8 Gen 3, 6000mAh", performance: 93, rating: 4.4, reviews: 987, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 16, name: "Sony Xperia 1 VI", price: 119999, category: "Mobile", spec: "4K OLED, Pro Camera", performance: 91, rating: 4.3, reviews: 543, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 17, name: "Honor Magic 6 Pro", price: 54999, category: "Mobile", spec: "SD 8 Gen 3, AI Pro", performance: 86, rating: 4.1, reviews: 765, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 18, name: "Nubia Red Magic 9 Pro", price: 49999, category: "Mobile", spec: "Cooling Fan, 165W", performance: 89, rating: 4.2, reviews: 654, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 19, name: "ZTE Axon 50 Ultra", price: 37999, category: "Mobile", spec: "SD 8 Gen 2, Triple Cam", performance: 81, rating: 3.9, reviews: 432, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 20, name: "Lava Agni 3", price: 22999, category: "Mobile", spec: "Dimensity 9200, India", performance: 77, rating: 3.8, reviews: 543, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 21, name: "Micromax In Note 3", price: 16999, category: "Mobile", spec: "Helio G95, 5000mAh", performance: 68, rating: 3.7, reviews: 1234, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 22, name: "Samsung Galaxy Z Fold 6", price: 189999, category: "Mobile", spec: "Fold Display, SD 8 Gen 3", performance: 97, rating: 4.5, reviews: 876, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 23, name: "Samsung Galaxy Z Flip 6", price: 99999, category: "Mobile", spec: "Compact Flip, 50MP", performance: 88, rating: 4.3, reviews: 1098, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 24, name: "Oppo Find N3", price: 139999, category: "Mobile", spec: "Hasselblad Fold", performance: 94, rating: 4.2, reviews: 543, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 25, name: "Xiaomi Mix Fold 4", price: 129999, category: "Mobile", spec: "Leica Quad Camera", performance: 92, rating: 4.1, reviews: 432, image: "https://images.unsplash.com/photo-1605236453806-b25a3db7f4d5?w=500" },
+        { id: 26, name: "iPhone 16 Pro", price: 134900, category: "Mobile", spec: "A18 Pro, 256GB", performance: 94, rating: 4.6, reviews: 3210, image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500" },
+        { id: 27, name: "iPhone 16", price: 79900, category: "Mobile", spec: "A18 Chip, Dual Cam", performance: 87, rating: 4.4, reviews: 4321, image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500" },
+        { id: 28, name: "Samsung Galaxy S25", price: 79999, category: "Mobile", spec: "Snapdragon 8 Gen 4", performance: 89, rating: 4.3, reviews: 2109, image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500" },
+        { id: 29, name: "Google Pixel 9", price: 69999, category: "Mobile", spec: "Tensor G4, AI Built-in", performance: 84, rating: 4.2, reviews: 1765, image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500" },
+
+        // LAPTOPS (30)
+        { id: 30, name: "MacBook Pro 16 M5 Max", price: 449900, category: "Laptop", spec: "128GB RAM, 40-Core GPU", performance: 99, rating: 4.8, reviews: 987, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 31, name: "Dell XPS 17", price: 285000, category: "Laptop", spec: "Intel i9-14900HX, RTX 4080", performance: 95, rating: 4.5, reviews: 654, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 32, name: "HP Spectre x360", price: 185000, category: "Laptop", spec: "Intel i7, 16GB RAM", performance: 85, rating: 4.3, reviews: 432, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 33, name: "Lenovo ThinkPad X1 Carbon", price: 195000, category: "Laptop", spec: "Intel i7-1365U, 32GB RAM", performance: 82, rating: 4.4, reviews: 543, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 34, name: "ASUS ROG Zephyrus G16", price: 225000, category: "Laptop", spec: "Intel i9, RTX 4070", performance: 92, rating: 4.6, reviews: 789, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 35, name: "MSI Creator Z17", price: 245000, category: "Laptop", spec: "Intel i9, RTX 4080", performance: 90, rating: 4.5, reviews: 321, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 36, name: "Acer Swift 7", price: 125000, category: "Laptop", spec: "Intel i7, 16GB RAM", performance: 75, rating: 4.1, reviews: 234, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 37, name: "Microsoft Surface Laptop 6", price: 165000, category: "Laptop", spec: "Intel i7, 32GB RAM", performance: 80, rating: 4.3, reviews: 456, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 38, name: "Razer Blade 18", price: 485000, category: "Laptop", spec: "Intel i9, RTX 4090", performance: 98, rating: 4.7, reviews: 198, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 39, name: "LG Gram 17", price: 145000, category: "Laptop", spec: "Intel i7-1360P, 16GB", performance: 78, rating: 4.2, reviews: 287, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 40, name: "Samsung Galaxy Book3 Ultra", price: 205000, category: "Laptop", spec: "Intel i9, RTX 4070", performance: 88, rating: 4.4, reviews: 345, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 41, name: "ASUS Zenbook Pro Duo", price: 235000, category: "Laptop", spec: "Dual 4K Displays, i9", performance: 86, rating: 4.3, reviews: 267, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 42, name: "HP Omen 17", price: 195000, category: "Laptop", spec: "Intel i7, RTX 4060", performance: 87, rating: 4.2, reviews: 432, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 43, name: "Lenovo Legion 7i", price: 215000, category: "Laptop", spec: "Intel i9, RTX 4080", performance: 91, rating: 4.5, reviews: 298, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 44, name: "Dell Alienware m18", price: 265000, category: "Laptop", spec: "Intel i9, RTX 4090", performance: 96, rating: 4.6, reviews: 189, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 45, name: "MacBook Air M4", price: 124900, category: "Laptop", spec: "M4 Chip, 16GB RAM", performance: 80, rating: 4.6, reviews: 2341, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 46, name: "MacBook Pro 14 M4 Pro", price: 219900, category: "Laptop", spec: "M4 Pro Chip, 24GB", performance: 92, rating: 4.7, reviews: 1543, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 47, name: "Gigabyte Aero 16", price: 199999, category: "Laptop", spec: "Intel i9, RTX 4070", performance: 89, rating: 4.4, reviews: 432, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 48, name: "Acer Predator Helios 18", price: 249999, category: "Laptop", spec: "Intel i9, RTX 4080", performance: 93, rating: 4.5, reviews: 321, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 49, name: "Dell Inspiron 16 Plus", price: 94999, category: "Laptop", spec: "Intel i7, RTX 3050", performance: 72, rating: 4.1, reviews: 876, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 50, name: "HP Pavilion Plus 14", price: 79999, category: "Laptop", spec: "Intel i5, 16GB RAM", performance: 68, rating: 4.0, reviews: 1234, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 51, name: "Lenovo IdeaPad Gaming 3", price: 64999, category: "Laptop", spec: "AMD Ryzen 7, RTX 4050", performance: 70, rating: 3.9, reviews: 1543, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 52, name: "ASUS TUF Gaming A15", price: 74999, category: "Laptop", spec: "Ryzen 9, RTX 4060", performance: 75, rating: 4.2, reviews: 1876, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 53, name: "Acer Aspire 5", price: 54999, category: "Laptop", spec: "Intel i5, 8GB RAM", performance: 58, rating: 3.8, reviews: 2341, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 54, name: "HP 15s", price: 44999, category: "Laptop", spec: "Intel i3, 8GB RAM", performance: 52, rating: 3.7, reviews: 3210, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 55, name: "Framework Laptop 16", price: 189999, category: "Laptop", spec: "AMD Ryzen 7, Modular", performance: 84, rating: 4.5, reviews: 543, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 56, name: "System76 Oryx Pro", price: 175000, category: "Laptop", spec: "Intel i9, Linux Pro", performance: 91, rating: 4.3, reviews: 234, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 57, name: "Huawei MateBook X Pro", price: 139999, category: "Laptop", spec: "Intel i7, Touch Screen", performance: 79, rating: 4.2, reviews: 654, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 58, name: "MSI Stealth 16 Studio", price: 229999, category: "Laptop", spec: "Intel i9, RTX 4080", performance: 93, rating: 4.6, reviews: 432, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+        { id: 59, name: "Lenovo Yoga 9i", price: 159999, category: "Laptop", spec: "Intel i7, 2-in-1 OLED", performance: 83, rating: 4.4, reviews: 765, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500" },
+
+        // AUDIO (30)
+        { id: 60, name: "Sony WH-1000XM6", price: 29990, category: "Audio", spec: "ANC, 40hr Battery", performance: 95, rating: 4.4, reviews: 3421, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
+        { id: 61, name: "Apple AirPods Pro 2", price: 24900, category: "Audio", spec: "H2 Chip, Spatial Audio", performance: 90, rating: 4.3, reviews: 5432, image: "https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=500" },
+        { id: 62, name: "Bose QC Ultra", price: 32900, category: "Audio", spec: "ANC, CustomTune", performance: 92, rating: 4.5, reviews: 1876, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
+        { id: 63, name: "Sennheiser Momentum 4", price: 34990, category: "Audio", spec: "60hr Battery, Hi-Res", performance: 94, rating: 4.6, reviews: 987, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
+        { id: 64, name: "JBL Tour Pro 2", price: 19990, category: "Audio", spec: "Smart Case, Adaptive ANC", performance: 85, rating: 4.1, reviews: 1234, image: "https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=500" },
+        { id: 65, name: "Marshall Major IV", price: 14990, category: "Audio", spec: "80hr Battery, BT 5.2", performance: 82, rating: 4.2, reviews: 876, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
+        { id: 66, name: "Anker Liberty 4", price: 12990, category: "Audio", spec: "LDAC, Heart Rate", performance: 84, rating: 4.0, reviews: 1543, image: "https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=500" },
+        { id: 67, name: "Boat Airdopes 141", price: 2999, category: "Audio", spec: "42hr Playback", performance: 65, rating: 3.8, reviews: 8765, image: "https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=500" },
+        { id: 68, name: "OnePlus Buds Pro 2", price: 9990, category: "Audio", spec: "LHDC 5.0, 49dB ANC", performance: 88, rating: 4.2, reviews: 2341, image: "https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=500" },
+        { id: 69, name: "Realme Buds Air 5 Pro", price: 4999, category: "Audio", spec: "50dB ANC, 40hr", performance: 83, rating: 4.0, reviews: 3456, image: "https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=500" },
+        { id: 70, name: "Sony WF-1000XM5", price: 24990, category: "Audio", spec: "Industry Leading ANC", performance: 94, rating: 4.5, reviews: 2876, image: "https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=500" },
+        { id: 71, name: "Bose QC Earbuds 2", price: 27990, category: "Audio", spec: "CustomTune, 6hr", performance: 91, rating: 4.4, reviews: 1987, image: "https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=500" },
+        { id: 72, name: "Sennheiser TW 4", price: 29990, category: "Audio", spec: "Audiophile Sound", performance: 96, rating: 4.6, reviews: 876, image: "https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=500" },
+        { id: 73, name: "JBL Flip 6", price: 8999, category: "Audio", spec: "IP67, 12hr Battery", performance: 78, rating: 4.2, reviews: 4532, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500" },
+        { id: 74, name: "Sony SRS-XG500", price: 19990, category: "Audio", spec: "Extra Bass, 30hr", performance: 84, rating: 4.3, reviews: 1234, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500" },
+        { id: 75, name: "B&O H95", price: 84990, category: "Audio", spec: "Premium ANC", performance: 98, rating: 4.7, reviews: 432, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
+        { id: 76, name: "Audio-Technica M50xBT2", price: 19990, category: "Audio", spec: "Studio Monitor", performance: 93, rating: 4.4, reviews: 1543, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
+        { id: 77, name: "Beats Studio Pro", price: 34990, category: "Audio", spec: "Spatial Audio", performance: 89, rating: 4.2, reviews: 2109, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
+        { id: 78, name: "Shure AONIC 50", price: 29990, category: "Audio", spec: "Studio Quality ANC", performance: 97, rating: 4.5, reviews: 654, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
+        { id: 79, name: "Jabra Elite 85h", price: 24990, category: "Audio", spec: "SmartSound ANC", performance: 88, rating: 4.3, reviews: 876, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
+        { id: 80, name: "Nothing Ear (2)", price: 8999, category: "Audio", spec: "Transparent Design", performance: 86, rating: 4.1, reviews: 2341, image: "https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=500" },
+        { id: 81, name: "Galaxy Buds2 Pro", price: 17990, category: "Audio", spec: "360 Audio", performance: 87, rating: 4.2, reviews: 1987, image: "https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=500" },
+        { id: 82, name: "JBL Charge 5", price: 14990, category: "Audio", spec: "Powerbank Speaker", performance: 81, rating: 4.3, reviews: 3210, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500" },
+        { id: 83, name: "UE BOOM 4", price: 16990, category: "Audio", spec: "360° Sound", performance: 83, rating: 4.2, reviews: 1654, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500" },
+        { id: 84, name: "Bose SoundLink Revolve+", price: 24990, category: "Audio", spec: "360° Sound Pro", performance: 86, rating: 4.4, reviews: 1432, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500" },
+        { id: 85, name: "Marshall Emberton II", price: 16990, category: "Audio", spec: "Vintage Design", performance: 82, rating: 4.3, reviews: 1098, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500" },
+        { id: 86, name: "Onyx Studio 8", price: 22990, category: "Audio", spec: "Designer Speaker", performance: 85, rating: 4.2, reviews: 876, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500" },
+        { id: 87, name: "Boat Stone 1508", price: 3999, category: "Audio", spec: "40W Output", performance: 76, rating: 3.9, reviews: 5432, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500" },
+        { id: 88, name: "Xiaomi Sound Pro", price: 6999, category: "Audio", spec: "Hi-Res Audio", performance: 79, rating: 4.0, reviews: 2876, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500" },
+        { id: 89, name: "Sonos Move 2", price: 44990, category: "Audio", spec: "Wi-Fi + BT", performance: 89, rating: 4.6, reviews: 765, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500" },
+
+        // GADGETS & WEARABLES (30)
+        { id: 90, name: "Apple Vision Pro 2", price: 299900, category: "Gadget", spec: "Spatial Computing", performance: 98, rating: 4.7, reviews: 543, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500" },
+        { id: 91, name: "Meta Quest 4", price: 79999, category: "Gadget", spec: "4K Displays, Hand Tracking", performance: 90, rating: 4.4, reviews: 2341, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500" },
+        { id: 92, name: "Galaxy Watch 7", price: 34999, category: "Gadget", spec: "Wear OS 4, Health Pro", performance: 80, rating: 4.3, reviews: 1876, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+        { id: 93, name: "Apple Watch Ultra 2", price: 89999, category: "Gadget", spec: "Titanium, 100m Water", performance: 85, rating: 4.6, reviews: 3210, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+        { id: 94, name: "Garmin Fenix 7 Pro", price: 74999, category: "Gadget", spec: "Solar, Pro Nav", performance: 82, rating: 4.5, reviews: 987, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+        { id: 95, name: "iPad Pro 13 M4", price: 149900, category: "Gadget", spec: "M4 Chip, OLED", performance: 98, rating: 4.7, reviews: 1543, image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500" },
+        { id: 96, name: "Galaxy Tab S9 Ultra", price: 119999, category: "Gadget", spec: "14.6\" AMOLED", performance: 92, rating: 4.5, reviews: 876, image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500" },
+        { id: 97, name: "Surface Pro 10", price: 99999, category: "Gadget", spec: "Intel i7, 2-in-1", performance: 88, rating: 4.3, reviews: 654, image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500" },
+        { id: 98, name: "Kindle Oasis 4", price: 24999, category: "Gadget", spec: "300ppi, Waterproof", performance: 70, rating: 4.2, reviews: 2341, image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500" },
+        { id: 99, name: "Nintendo Switch OLED", price: 34999, category: "Gadget", spec: "7\" OLED Console", performance: 80, rating: 4.4, reviews: 4532, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500" },
+        { id: 100, name: "Steam Deck OLED", price: 44999, category: "Gadget", spec: "AMD APU, Handheld", performance: 85, rating: 4.3, reviews: 1876, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500" },
+        { id: 101, name: "DJI Mini 4 Pro", price: 69999, category: "Gadget", spec: "4K HDR Drone", performance: 85, rating: 4.5, reviews: 987, image: "https://images.unsplash.com/photo-1473968512647-3e9676f19398?w=500" },
+        { id: 102, name: "GoPro Hero 13", price: 39999, category: "Gadget", spec: "5.3K Video", performance: 82, rating: 4.4, reviews: 1543, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500" },
+        { id: 103, name: "Insta360 X4", price: 44999, category: "Gadget", spec: "8K 360° Cam", performance: 84, rating: 4.3, reviews: 765, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500" },
+        { id: 104, name: "PS5 Pro", price: 54999, category: "Gadget", spec: "4K 120fps, 2TB", performance: 95, rating: 4.6, reviews: 3456, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500" },
+        { id: 105, name: "Apple Watch Series 10", price: 49900, category: "Gadget", spec: "ECG, Always-On", performance: 88, rating: 4.4, reviews: 5432, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+        { id: 106, name: "Fitbit Sense 2", price: 24990, category: "Gadget", spec: "Stress Management", performance: 75, rating: 4.1, reviews: 2341, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+        { id: 107, name: "Amazfit GTR 4", price: 14999, category: "Gadget", spec: "14 Days Battery", performance: 70, rating: 4.0, reviews: 3210, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+        { id: 108, name: "Noise ColorFit Pro 5", price: 4999, category: "Gadget", spec: "Budget Smartwatch", performance: 62, rating: 3.8, reviews: 8765, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+        { id: 109, name: "Boat Xtend Pro", price: 3499, category: "Gadget", spec: "Alexa Built-in", performance: 60, rating: 3.7, reviews: 9876, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+        { id: 110, name: "Fire-Boltt Phoenix", price: 2999, category: "Gadget", spec: "AMOLED calling", performance: 58, rating: 3.6, reviews: 11234, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+        { id: 111, name: "iPad Air M2", price: 64900, category: "Gadget", spec: "11\" Liquid Retina", performance: 85, rating: 4.5, reviews: 2341, image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500" },
+        { id: 112, name: "Galaxy Tab S9", price: 74999, category: "Gadget", spec: "11\" AMOLED Pro", performance: 83, rating: 4.3, reviews: 1543, image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500" },
+        { id: 113, name: "OnePlus Pad 2", price: 42999, category: "Gadget", spec: "144Hz Display", performance: 80, rating: 4.1, reviews: 987, image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500" },
+        { id: 114, name: "Lenovo Tab P12", price: 34999, category: "Gadget", spec: "3K Display, JBL", performance: 72, rating: 4.0, reviews: 1234, image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500" },
+        { id: 115, name: "Xiaomi Pad 6 Pro", price: 39999, category: "Gadget", spec: "SD 8+ Gen 1", performance: 76, rating: 4.2, reviews: 1432, image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500" },
+        { id: 116, name: "Kindle Paperwhite", price: 14999, category: "Gadget", spec: "Adjustable Warm Light", performance: 65, rating: 4.3, reviews: 6543, image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500" },
+        { id: 117, name: "Kobo Libra 2", price: 17999, category: "Gadget", spec: "E-Ink, Buttons", performance: 66, rating: 4.2, reviews: 876, image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500" },
+        { id: 118, name: "Xbox Series X", price: 54999, category: "Gadget", spec: "4K 120fps, 1TB", performance: 92, rating: 4.5, reviews: 2876, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500" },
+        { id: 119, name: "ASUS ROG Ally", price: 59999, category: "Gadget", spec: "Z1 Extreme, 120Hz", performance: 82, rating: 4.2, reviews: 1098, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500" },
+
+        // CAMERAS (20)
+        { id: 120, name: "Sony Alpha A7R V", price: 389999, category: "Camera", spec: "61MP, 8K Video", performance: 97, rating: 4.8, reviews: 543, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 121, name: "Canon EOS R5", price: 329999, category: "Camera", spec: "45MP, 8K RAW", performance: 95, rating: 4.7, reviews: 432, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 122, name: "Nikon Z9", price: 469999, category: "Camera", spec: "45.7MP, 8K 60p", performance: 98, rating: 4.8, reviews: 321, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 123, name: "Fujifilm X-T5", price: 149999, category: "Camera", spec: "40MP APS-C", performance: 85, rating: 4.5, reviews: 876, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 124, name: "Lumix S5 II", price: 199999, category: "Camera", spec: "24.2MP Full Frame", performance: 88, rating: 4.4, reviews: 654, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 125, name: "EOS R6 Mark II", price: 249999, category: "Camera", spec: "40fps Burst", performance: 91, rating: 4.6, reviews: 765, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 126, name: "Sony A7 IV", price: 239999, category: "Camera", spec: "33MP Full Frame", performance: 90, rating: 4.5, reviews: 1234, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 127, name: "Nikon Z6 III", price: 229999, category: "Camera", spec: "Stacked Sensor", performance: 89, rating: 4.4, reviews: 543, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 128, name: "Fujifilm X-H2S", price: 229999, category: "Camera", spec: "Stacked 26.1MP", performance: 91, rating: 4.5, reviews: 432, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 129, name: "Mavic 3 Pro", price: 259999, category: "Camera", spec: "Hasselblad Drone", performance: 90, rating: 4.6, reviews: 876, image: "https://images.unsplash.com/photo-1473968512647-3e9676f19398?w=500" },
+        { id: 130, name: "DJI Air 3", price: 94999, category: "Camera", spec: "Dual Camera Drone", performance: 82, rating: 4.3, reviews: 1234, image: "https://images.unsplash.com/photo-1473968512647-3e9676f19398?w=500" },
+        { id: 131, name: "GoPro MAX", price: 49999, category: "Camera", spec: "360° 5.6K Video", performance: 80, rating: 4.3, reviews: 1234, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500" },
+        { id: 132, name: "DJI Pocket 3", price: 34999, category: "Camera", spec: "3-Axis Gimbal Cam", performance: 85, rating: 4.4, reviews: 987, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500" },
+        { id: 133, name: "Sony FX30", price: 179999, category: "Camera", spec: "APS-C Cinema", performance: 93, rating: 4.5, reviews: 321, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 134, name: "Blackmagic 6K", price: 159999, category: "Camera", spec: "ProRes EF Mount", performance: 90, rating: 4.4, reviews: 234, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 135, name: "Osmo Action 4", price: 34999, category: "Camera", spec: "4K 120fps Color", performance: 83, rating: 4.2, reviews: 1543, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500" },
+        { id: 136, name: "Canon EOS R8", price: 149999, category: "Camera", spec: "Full Frame Compact", performance: 81, rating: 4.3, reviews: 654, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 137, name: "Olympus OM-1", price: 179999, category: "Camera", spec: "MFT AI AF", performance: 83, rating: 4.4, reviews: 432, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 138, name: "Leica Q3", price: 549999, category: "Camera", spec: "Full Frame 28mm", performance: 98, rating: 4.7, reviews: 234, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+        { id: 139, name: "Ricoh GR III", price: 89999, category: "Camera", spec: "Pocket Street Cam", performance: 85, rating: 4.3, reviews: 765, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" },
+
+        // SMART HOME (15)
+        { id: 140, name: "Echo Studio", price: 22999, category: "Smart Home", spec: "3D Audio Alexa", performance: 85, rating: 4.3, reviews: 2341, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 141, name: "Nest Hub Max", price: 14999, category: "Smart Home", spec: "10\" Google Cam", performance: 80, rating: 4.2, reviews: 1876, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 142, name: "HomePod 2", price: 32999, category: "Smart Home", spec: "Spatial Siri", performance: 88, rating: 4.4, reviews: 987, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 143, name: "Echo Dot 5", price: 4999, category: "Smart Home", spec: "Compact Alexa", performance: 75, rating: 4.1, reviews: 8765, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 144, name: "Nest Mini", price: 3999, category: "Smart Home", spec: "Compact Google", performance: 72, rating: 4.0, reviews: 9876, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 145, name: "Philips Hue Kit", price: 12999, category: "Smart Home", spec: "4 Bulbs + Bridge", performance: 85, rating: 4.4, reviews: 3210, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 146, name: "Tapo C200", price: 2499, category: "Smart Home", spec: "1080p Pan/Tilt", performance: 78, rating: 4.2, reviews: 5432, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 147, name: "Ring Doorbell Pro 2", price: 24999, category: "Smart Home", spec: "1536p HDR 3D", performance: 88, rating: 4.3, reviews: 2341, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 148, name: "Nest Thermostat", price: 19999, category: "Smart Home", spec: "AI Learning", performance: 86, rating: 4.4, reviews: 1543, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 149, name: "Eufy RoboVac X8", price: 34999, category: "Smart Home", spec: "Twin Turbine AI", performance: 84, rating: 4.2, reviews: 1876, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 150, name: "Roomba j7+", price: 64999, category: "Smart Home", spec: "Self-Emptying", performance: 92, rating: 4.5, reviews: 1234, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 151, name: "Wyze Cam v4", price: 3499, category: "Smart Home", spec: "2K Night Vision", performance: 80, rating: 4.1, reviews: 6543, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 152, name: "August Smart Lock", price: 19999, category: "Smart Home", spec: "Wi-Fi enabled", performance: 82, rating: 4.3, reviews: 2109, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 153, name: "Aqara Hub M2", price: 6999, category: "Smart Home", spec: "Zigbee 3.0", performance: 78, rating: 4.2, reviews: 1432, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+        { id: 154, name: "Wemo Smart Plug", price: 1999, category: "Smart Home", spec: "Voice Control", performance: 75, rating: 4.0, reviews: 7654, image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500" },
+
+        // MONITORS (5)
+        { id: 163, name: "LG UltraGear 27\" OLED", price: 84999, category: "Monitor", spec: "240Hz, 0.03ms", performance: 97, rating: 4.6, reviews: 765, image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500" },
+        { id: 164, name: "Dell UltraSharp 4K", price: 54999, category: "Monitor", spec: "IPS USB-C Hub", performance: 88, rating: 4.4, reviews: 1234, image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500" },
+        { id: 165, name: "BenQ SW270C", price: 64999, category: "Monitor", spec: "99% Adobe RGB", performance: 90, rating: 4.5, reviews: 543, image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500" },
+        { id: 166, name: "ROG Swift PG27AQDM", price: 94999, category: "Monitor", spec: "OLED G-Sync", performance: 96, rating: 4.7, reviews: 987, image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500" },
+        { id: 167, name: "Odyssey Neo G9", price: 149999, category: "Monitor", spec: "57\" Ultrawide 240Hz", performance: 99, rating: 4.6, reviews: 432, image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500" },
+
+        // ACCESSORIES (10)
+        { id: 155, name: "Anker Webcam C300", price: 9999, category: "Accessories", spec: "2K AI Tracking", performance: 82, rating: 4.3, reviews: 2341, image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500" },
+        { id: 156, name: "Logitech MX Master 3S", price: 8999, category: "Accessories", spec: "Ergo Mouse 8K DPI", performance: 94, rating: 4.5, reviews: 4321, image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500" },
+        { id: 157, name: "Keychron Q1 Pro", price: 14999, category: "Accessories", spec: "Mechanical QMK", performance: 92, rating: 4.4, reviews: 1876, image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500" },
+        { id: 158, name: "Samsung T9 2TB SSD", price: 12999, category: "Accessories", spec: "2000MB/s Portable", performance: 95, rating: 4.4, reviews: 2109, image: "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=500" },
+        { id: 159, name: "WD My Passport 5TB", price: 8999, category: "Accessories", spec: "5TB HDD Storage", performance: 75, rating: 4.2, reviews: 3456, image: "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=500" },
+        { id: 160, name: "Anker 737 Power Bank", price: 14999, category: "Accessories", spec: "24Ah 140W Output", performance: 96, rating: 4.3, reviews: 2876, image: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=500" },
+        { id: 161, name: "Ugreen Nexode 200W", price: 9999, category: "Accessories", spec: "GaN 4-Port Charger", performance: 91, rating: 4.4, reviews: 1987, image: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=500" },
+        { id: 162, name: "CalDigit TS4 Dock", price: 34999, category: "Accessories", spec: "18 Ports Thunderbolt", performance: 98, rating: 4.5, reviews: 876, image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500" },
+        { id: 168, name: "Secretlab Titan Evo", price: 54999, category: "Accessories", spec: "Luxury Gaming Chair", performance: 94, rating: 4.5, reviews: 1876, image: "https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=500" },
+        { id: 170, name: "Stream Deck MK.2", price: 14999, category: "Accessories", spec: "15 LCD Keys Pro", performance: 90, rating: 4.4, reviews: 2109, image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500" }
+    ];
+
+    let registry = products.map(p => ({ ...p, qty: 0, review: "" }));
+
+    function updateClock() { 
+        document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('en-IN', { hour12: false }); 
+    }
+    setInterval(updateClock, 1000);
+
+    function updatePriceLabel() {
+        document.getElementById('price-val').innerText = parseInt(document.getElementById('price-range').value).toLocaleString('en-IN');
+        filterProducts();
+    }
+
+    // --- GLOBAL CART SYNC ENGINE ---
+    function syncToGlobalCart() {
+        let globalCart = JSON.parse(localStorage.getItem('cart')) || [];
+        const localActive = registry.filter(p => p.qty > 0).map(p => ({
+            name: p.name, price: p.price, qty: p.qty
+        }));
+        // Merge without losing other categories
+        const otherCategoryItems = globalCart.filter(gItem => !registry.some(rItem => rItem.name === gItem.name));
+        const finalCart = [...otherCategoryItems, ...localActive];
+        localStorage.setItem('cart', JSON.stringify(finalCart));
+        document.getElementById('cart-count').innerText = finalCart.reduce((acc, item) => acc + item.qty, 0);
+    }
+
+    function filterProducts() {
+        const query = document.getElementById('search-input').value.toLowerCase();
+        const max = parseInt(document.getElementById('price-range').value);
+        const selectedCats = Array.from(document.querySelectorAll('.cat-check:checked')).map(cb => cb.value);
+        
+        let filtered = registry.filter(p => {
+            const matchesSearch = p.name.toLowerCase().includes(query) || p.spec.toLowerCase().includes(query);
+            return matchesSearch && p.price <= max && selectedCats.includes(p.category);
+        });
+        renderProducts(filtered);
+    }
+
+    function updateItem(id, key, val) {
+        const item = registry.find(p => p.id === id);
+        item[key] = val;
+        syncToGlobalCart();
+        updateSummary();
+        renderProducts();
+    }
+
+    function renderProducts(list = registry) {
+        const container = document.getElementById("product-list");
+        container.innerHTML = list.map((p) => `
+            <div class="marketplace-card">
+                <div class="relative bg-white h-44 flex items-center justify-center p-6"><img src="${p.image}" class="max-h-full"></div>
+                <div class="p-5 flex-1 bg-black">
+                    <span class="text-[9px] font-bold text-amber-400 uppercase">${p.category}</span>
+                    <h3 class="text-xs font-bold text-white uppercase">${p.name}</h3>
+                    <div class="benchmark-bar"><div class="benchmark-fill" style="width: ${p.performance}%"></div></div>
+                    <p class="text-[9px] font-mono text-white/30 mt-2">${p.spec}</p>
+                </div>
+                <div class="qty-node">
+                    <div onclick="updateItem(${p.id}, 'qty', Math.max(0, ${p.qty - 1}))" class="qty-btn"><i class="fas fa-minus text-[10px]"></i></div>
+                    <span class="w-12 text-center text-white font-mono">${p.qty}</span>
+                    <div onclick="updateItem(${p.id}, 'qty', ${p.qty + 1})" class="qty-btn"><i class="fas fa-plus text-[10px]"></i></div>
+                </div>
+                <div class="price-priority-box">₹${p.price.toLocaleString('en-IN')}</div>
+            </div>`).join("");
+    }
+
+    function updateSummary() {
+        const activeItems = registry.filter(p => p.qty > 0);
+        const container = document.getElementById("summary-items");
+        if(activeItems.length === 0) {
+            container.innerHTML = `<p class="text-[10px] text-white/20 uppercase text-center py-10">REGISTRY EMPTY</p>`;
+            document.getElementById("total-price").innerText = "₹0";
+            return;
+        }
+        container.innerHTML = activeItems.map(p => `
+            <div class="bg-white/5 p-3 rounded-lg border border-white/10 mb-2">
+                <div class="flex justify-between items-start"><span class="text-[10px] font-bold text-white uppercase truncate">${p.name}</span><span class="text-[10px] font-mono text-amber-400">x${p.qty}</span></div>
+            </div>`).join("");
+        const total = activeItems.reduce((acc, p) => acc + (p.price * p.qty), 0);
+        document.getElementById("total-price").innerText = `₹${total.toLocaleString('en-IN')}`;
+    }
+
+    function secureEntry() {
+        syncToGlobalCart();
+        window.location.href = "checkout.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const globalCart = JSON.parse(localStorage.getItem('cart')) || [];
+        globalCart.forEach(gItem => {
+            const localMatch = registry.find(rItem => rItem.name === gItem.name);
+            if(localMatch) localMatch.qty = gItem.qty;
+        });
+        renderProducts(); updateSummary(); updateClock(); syncToGlobalCart();
+    });
+</script>
+</body>
+</html>
