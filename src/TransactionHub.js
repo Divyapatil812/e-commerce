@@ -29,7 +29,7 @@ const TransactionHub = ({ userName, location }) => {
     const handlePayment = async () => {
         setIsProcessing(true);
         try {
-            const response = await fetch('https://your-deployed-backend-url.com/finalize-transaction', {
+            const response = await fetch('https://e-commerce-yet6.onrender.com/send-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userName, amount: finalAmount })
