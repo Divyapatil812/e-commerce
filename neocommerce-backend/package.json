@@ -16,6 +16,7 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "mongoose": "^9.1.5",
+    "serverless-http": "^4.0.0",
     "twilio": "^5.12.0"
   }
 }

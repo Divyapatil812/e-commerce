@@ -17,10 +17,22 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
-// 1. Database Connection
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("Connected to MongoDB Node"))
-    .catch(err => console.error("Database Connection Failed", err));
+// 1. Database Connection Logic (Lazy Load)
+let isDbConnected = false;
+const connectDB = async () => {
+    if (isDbConnected) return;
+    if (!process.env.MONGO_URI) {
+        throw new Error("MONGO_URI is missing from environment variables");
+    }
+    try {
+        await mongoose.connect(process.env.MONGO_URI);
+        isDbConnected = true;
+        console.log("Connected to MongoDB Node");
+    } catch (err) {
+        console.error("Database Connection Failed", err);
+        throw err;
+    }
+};
 
 // 2. Data Models
 const OtpSchema = new mongoose.Schema({
@@ -42,11 +54,13 @@ const UserSchema = new mongoose.Schema({
 const OtpModel = mongoose.model('Otp', OtpSchema);
 const UserModel = mongoose.model('User', UserSchema);
 
-// 3. Twilio Initialization
-const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-
-console.log(`[TWILIO] Account SID: ${process.env.TWILIO_ACCOUNT_SID}`);
-console.log(`[TWILIO] Using phone: ${process.env.TWILIO_PHONE_NUMBER}`);
+// 3. Twilio Initialization (Lazy Load)
+const getTwilioClient = () => {
+    if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
+        throw new Error("Twilio credentials missing from environment variables");
+    }
+    return twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+};
 
 // ROUTE: Send OTP
 app.post('/send-otp', async (req, res) => {
@@ -59,17 +73,23 @@ app.post('/send-otp', async (req, res) => {
     const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
 
     try {
+        await connectDB();
+        const client = getTwilioClient();
+        
         console.log(`[SEND-OTP] Attempting to send OTP ${generatedOtp} to +91${mobile}`);
         
         await OtpModel.findOneAndUpdate({ mobile }, { code: generatedOtp }, { upsert: true, new: true });
 
-       // Inside app.post('/send-otp')
-const fromNumber = process.env.TWILIO_PHONE_NUMBER.replace(' whatsapp', '');
-const message = await client.messages.create({
-    body: `NEOCOMMERCE Access Key: ${generatedOtp}`,
-    from: `whatsapp:${fromNumber}`,
-    to: `whatsapp:+91${mobile}`
-});
+        const rawNumber = process.env.TWILIO_PHONE_NUMBER || '';
+        if (!rawNumber) {
+            throw new Error("TWILIO_PHONE_NUMBER is missing from environment variables");
+        }
+        const fromNumber = rawNumber.replace(/^whatsapp:/i, '').trim();
+        const message = await client.messages.create({
+            body: `NEOCOMMERCE Access Key: ${generatedOtp}`,
+            from: `whatsapp:${fromNumber}`,
+            to: `whatsapp:+91${mobile}`
+        });
 
         console.log(`[SUCCESS] OTP sent: ${message.sid}`);
         res.status(200).json({ success: true, sid: message.sid });
@@ -90,6 +110,7 @@ app.post('/verify-otp', async (req, res) => {
     const { mobile, otp, name, location } = req.body;
 
     try {
+        await connectDB();
         const record = await OtpModel.findOne({ mobile });
 
         if (record && record.code === otp) {
@@ -97,7 +118,7 @@ app.post('/verify-otp', async (req, res) => {
             const newUser = await UserModel.create({
                 name,
                 mobile,
-                location: { lat: location.lat, lon: location.lon }
+                location: { lat: location?.lat, lon: location?.lon }
             });
 
             await OtpModel.deleteOne({ mobile }); // Cleanup
@@ -121,7 +142,11 @@ app.post('/finalize-transaction', async (req, res) => {
     }
 });
 
-app.listen(5000, '0.0.0.0', () => console.log("Neo-Backend Live on Port 5000"));
+if (process.env.NODE_ENV !== 'production' && !process.env.NETLIFY_DEV) {
+    app.listen(5000, '0.0.0.0', () => console.log("Neo-Backend Live on Port 5000"));
+}
+
+module.exports = app;
 
 // Handle uncaught errors
 process.on('unhandledRejection', (err) => {
