@@ -54,7 +54,7 @@ useEffect(() => {
     e.preventDefault();
     if (formData.mobile.length === 10) {
         try {
-            const res = await fetch('https://your-deployed-backend-url.com/send-otp', {
+            const res = await fetch('/.netlify/functions/api/send-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ mobile: formData.mobile })
@@ -63,14 +63,13 @@ useEffect(() => {
             if (res.ok) {
                 setStep(2);
             } else {
-                // ADD THIS LINE TO SEE THE ERROR CODE
-                console.log("Server Response Error:", res.status); 
-                alert("Failed to send Security Key.");
+                const errorData = await res.json().catch(() => ({}));
+                console.log("Server Response Error:", res.status, errorData);
+                alert(`Failed to send Security Key. Reason: ${errorData.error || 'Server Error'}`);
             }
-        } catch (err) { 
-            // ADD THIS LINE TO SEE CONNECTION ISSUES
-            console.error("Fetch Error:", err); 
-            alert("Backend Node Offline."); 
+        } catch (err) {
+            console.error("Fetch Error:", err);
+            alert("Backend Node Offline or Network Error.");
         }
     }
 };
@@ -79,7 +78,7 @@ useEffect(() => {
     const finalSubmit = async () => {
         setIsVerifying(true);
       try {
-            const res = await fetch('http://localhost:5000/verify-otp', {
+            const res = await fetch('/.netlify/functions/api/verify-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
