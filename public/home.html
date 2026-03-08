@@ -205,6 +205,13 @@
 
         async function initApp() {
             updateCartUI();
+            
+            const currentUser = localStorage.getItem('neo_user') || sessionStorage.getItem('lastLoginID') || "CHETHU";
+            const profileId = document.getElementById('profile-id');
+            const profilePass = document.getElementById('profile-pass');
+            if(profileId) profileId.innerText = currentUser.toUpperCase() + (currentUser.toUpperCase() === "CHETHU" ? "7890" : "");
+            if(profilePass) profilePass.innerText = currentUser.toUpperCase();
+
             const now = new Date();
             document.getElementById('current-date').innerText = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             

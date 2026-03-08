@@ -184,8 +184,10 @@
             const inputID = document.getElementById('userID').value;
             const inputPass = document.getElementById('userPass').value;
             
-            // --- VALIDATION CHECK: HARDCODED CREDENTIALS ---
-            if (inputID === "CHETHU" && inputPass === "CHETHU7890") {
+            // --- VALIDATION CHECK: DYNAMIC CREDENTIALS ---
+            if (inputID.trim() !== "" && inputPass.trim() !== "") {
+                localStorage.setItem('neo_user', inputID);
+                sessionStorage.setItem('lastLoginID', inputID);
                 // SUCCESS: Run the loading sequence
                 startLoginSequence();
             } else {
