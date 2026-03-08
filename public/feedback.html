@@ -169,6 +169,9 @@
             e.preventDefault();
             document.getElementById('form-view').classList.add('hidden');
             document.getElementById('success-view').classList.remove('hidden');
+            setTimeout(() => {
+                window.location.href = 'logout.html';
+            }, 2000);
         };
     </script>
 </body>

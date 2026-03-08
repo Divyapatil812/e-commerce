@@ -79,13 +79,13 @@
             <div class="w-28 h-28 rounded-[2.5rem] bg-amber-500 flex items-center justify-center text-5xl text-black shadow-2xl mx-auto mb-6">
                 <i class="fas fa-user-shield"></i>
             </div>
-            <h4 id="profile-id" class="font-extrabold text-2xl tracking-tighter uppercase">CHETHU7890</h4>
+            <h4 id="profile-id" class="font-extrabold text-2xl tracking-tighter uppercase">GUEST</h4>
             <p class="text-[10px] font-bold text-amber-500 uppercase tracking-[0.2em] mt-2">Authenticated User</p>
         </div>
         <div class="space-y-4 mb-12">
             <div class="p-5 bg-white/5 rounded-3xl border border-white/5">
                 <p class="text-[10px] font-bold text-slate-500 uppercase mb-2">Access Password</p>
-                <p id="profile-pass" class="text-sm font-bold tracking-widest text-white">CHETHU</p>
+                <p id="profile-pass" class="text-sm font-bold tracking-widest text-white">GUEST</p>
             </div>
         </div>
         <button onclick="logout()" class="w-full py-5 bg-white text-black rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-amber-500 transition">Logout Core</button>
@@ -194,7 +194,7 @@
         function logout() {
             sessionStorage.clear();
             localStorage.removeItem('cart'); // Optional: Clear cart on logout
-            window.location.href = "login.html"; 
+            window.location.href = "logout.html"; 
         }
 
         function updateCartUI() {
@@ -206,10 +206,10 @@
         async function initApp() {
             updateCartUI();
             
-            const currentUser = localStorage.getItem('neo_user') || sessionStorage.getItem('lastLoginID') || "CHETHU";
+            const currentUser = localStorage.getItem('neo_user') || sessionStorage.getItem('lastLoginID') || "GUEST";
             const profileId = document.getElementById('profile-id');
             const profilePass = document.getElementById('profile-pass');
-            if(profileId) profileId.innerText = currentUser.toUpperCase() + (currentUser.toUpperCase() === "CHETHU" ? "7890" : "");
+            if(profileId) profileId.innerText = currentUser.toUpperCase();
             if(profilePass) profilePass.innerText = currentUser.toUpperCase();
 
             const now = new Date();
