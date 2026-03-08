@@ -107,9 +107,9 @@
 
         function processFinalReport() {
             // Get user data
-            const rawID = sessionStorage.getItem('lastLoginID') || "CHETHU7890";
+            const rawID = localStorage.getItem('neo_user') || sessionStorage.getItem('lastLoginID') || "CHETHU";
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const user = rawID.toUpperCase().includes('CHETHU') ? "Chethu" : rawID;
+            const user = rawID.toUpperCase() === 'CHETHU' ? "Chethu" : rawID;
             
             document.getElementById('user-display').innerText = user;
 
