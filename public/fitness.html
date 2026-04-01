@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/js/product-images.js"></script>
     <style>
         :root { --neon-gold: #fbbf24; --bg-dark: #050505; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: #f8fafc; margin: 0; overflow-x: hidden; }
@@ -245,6 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if(localMatch) localMatch.qty = gItem.qty;
     });
     renderProducts(); updateSummary(); updateClock(); syncToGlobalCart();
+    loadProductImages(fitnessProducts, 'img').then(() => { registry.forEach((r) => { const src = fitnessProducts.find(p => p.id === r.id); if (src) r.img = src.img; }); renderProducts(); });
 });
 </script>
 </body>

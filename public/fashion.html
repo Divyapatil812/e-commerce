@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/js/product-images.js"></script>
     <style>
         :root { --neon-gold: #fbbf24; --bg-dark: #050505; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: #f8fafc; margin: 0; overflow-x: hidden; }
@@ -135,7 +136,7 @@
         container.innerHTML = list.map((p) => `
             <div class="marketplace-card">
                 <div class="relative bg-white h-48 flex items-center justify-center p-6">
-                    <img src="https://picsum.photos/seed/fashion-${p.id}/400/400" class="max-h-full object-contain">
+                    <img src="${p.image || 'https://picsum.photos/seed/fashion-' + p.id + '/400/400'}" class="max-h-full object-contain">
                     <div class="absolute top-4 right-4 bg-black/80 backdrop-blur px-3 py-1 rounded-full border border-white/10">
                         <span class="text-[10px] font-bold text-amber-500">LVL ${p.performance}</span>
                     </div>
@@ -204,9 +205,10 @@
             if(localMatch) localMatch.qty = gItem.qty; 
         });
 
-        renderProducts(); 
-        updateSummary(); 
+        renderProducts();
+        updateSummary();
         syncToGlobalCart();
+        loadProductImages(products, 'image').then(() => { registry.forEach((r) => { const src = products.find(p => p.id === r.id); if (src) r.image = src.image; }); renderProducts(); });
     });
 </script>
 </body>
