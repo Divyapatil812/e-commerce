@@ -197,6 +197,12 @@
         { id: 84, name: "T3 AireLuxe Dryer", price: 22500, category: "Tools", spec: "IonAir Pro", performance: 91, rating: 4.6, reviews: 4321, image: "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=500" }
     ];
 
+    const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6nF4DNz";
+
+    function getImageUrl(src) {
+        return src.includes('?') ? `${src}&key=${PRODUCT_IMAGE_API_KEY}` : `${src}?key=${PRODUCT_IMAGE_API_KEY}`;
+    }
+
     let registry = products.map(p => ({ ...p, qty: 0, review: "" }));
 
     function updateClock() { document.getElementById('live-clock').textContent = new Date().toLocaleTimeString('en-IN', { hour12: false }); }
@@ -211,7 +217,7 @@
     function syncToGlobalCart() {
         let globalCart = JSON.parse(localStorage.getItem('cart')) || [];
         const localActive = registry.filter(p => p.qty > 0).map(p => ({
-            name: p.name, price: p.price, qty: p.qty
+            name: p.name, price: p.price, qty: p.qty, image: getImageUrl(p.image)
         }));
         const otherCategoryItems = globalCart.filter(gItem => !registry.some(rItem => rItem.name === gItem.name));
         const finalCart = [...otherCategoryItems, ...localActive];
@@ -245,7 +251,7 @@
         const container = document.getElementById("product-list");
         container.innerHTML = list.map((p) => `
             <div class="marketplace-card">
-                <div class="relative bg-white h-44 flex items-center justify-center p-6"><img src="${p.image}" class="max-h-full"></div>
+                <div class="relative bg-white h-44 flex items-center justify-center p-6"><img src="${getImageUrl(p.image)}" class="max-h-full"></div>
                 <div class="p-5 flex-1 bg-black">
                     <span class="text-[9px] font-bold text-amber-400 uppercase">${p.category}</span>
                     <h3 class="text-xs font-bold text-white uppercase">${p.name}</h3>

@@ -102,6 +102,12 @@
         { id: 25, name: "Hermès H Belt 32mm", price: 72000, category: "Accessories", spec: "Reversible Leather", sizing: false, performance: 68 }
     ];
 
+    const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6nF4DNz";
+
+    function getImageUrl(src) {
+        return src.includes('?') ? `${src}&key=${PRODUCT_IMAGE_API_KEY}` : `${src}?key=${PRODUCT_IMAGE_API_KEY}`;
+    }
+
     let registry = products.map(p => ({ ...p, qty: 0, selectedSize: "M" }));
 
     function syncToGlobalCart() {
@@ -111,7 +117,8 @@
             name: p.name, 
             price: p.price, 
             qty: p.qty,
-            category: 'Fashion'
+            category: 'Fashion',
+            image: getImageUrl(`https://picsum.photos/seed/fashion-${p.id}/400/400`)
         }));
         // Merge with items from other sectors (Beauty, Fitness, etc.)
         const otherSectorItems = globalCart.filter(gItem => !registry.some(rItem => rItem.name === gItem.name));
@@ -135,7 +142,7 @@
         container.innerHTML = list.map((p) => `
             <div class="marketplace-card">
                 <div class="relative bg-white h-48 flex items-center justify-center p-6">
-                    <img src="https://picsum.photos/seed/fashion-${p.id}/400/400" class="max-h-full object-contain">
+                    <img src="${getImageUrl(`https://picsum.photos/seed/fashion-${p.id}/400/400`)}" class="max-h-full object-contain">
                     <div class="absolute top-4 right-4 bg-black/80 backdrop-blur px-3 py-1 rounded-full border border-white/10">
                         <span class="text-[10px] font-bold text-amber-500">LVL ${p.performance}</span>
                     </div>

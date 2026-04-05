@@ -22,26 +22,26 @@ const Signup = () => {
 // Inside your Signup component
 const [location, setLocation] = useState({ city: "DETECTING...", lat: null, lon: null });
 
-useEffect(() => {
+    useEffect(() => {
     // 1. Check if the browser supports Geolocation
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
                 // 2. Capture coordinates
-                const { latitude, longitude } = position.coords;
+                    const { latitude, longitude } = position.coords;
                 setLocation(prev => ({ ...prev, lat: latitude, lon: longitude }));
-                
+
                 // Optional: You can send these to a Backend API here
-                console.log(`Node established at: ${latitude}, ${longitude}`);
-            },
-            (error) => {
-                console.error("Location access denied:", error.message);
-                setLocation(prev => ({ ...prev, city: "ACCESS DENIED" }));
-            },
+                    console.log(`Node established at: ${latitude}, ${longitude}`);
+                },
+                (error) => {
+                    console.error("Location access denied:", error.message);
+                    setLocation(prev => ({ ...prev, city: "ACCESS DENIED" }));
+                },
             { enableHighAccuracy: true } // Uses GPS hardware for "Elite" precision
-        );
-    }
-}, []);
+            );
+        }
+    }, []);
     useEffect(() => {
         const handleMouseMove = (e) => {
             setMousePos({ x: e.clientX, y: e.clientY });
@@ -89,16 +89,16 @@ useEffect(() => {
                 })
             });
             const data = await res.json();
-            
-if (data.valid) {
-    setShowSuccess(true);
-    setTimeout(() => {
-        onSignupSuccess(formData.name, location);
-    }, 2500);
-} else {
-    alert("INVALID SECURITY KEY.");
-    setIsVerifying(false);
-}
+
+            if (data.valid) {
+                setShowSuccess(true);
+                setTimeout(() => {
+                    onSignupSuccess(formData.name, location);
+                }, 2500);
+            } else {
+                alert("INVALID SECURITY KEY.");
+                setIsVerifying(false);
+            }
         } catch (err) {
             setIsVerifying(false);
         }
@@ -116,17 +116,17 @@ if (data.valid) {
     return (
         <div className="signup-wrapper">
 {/* INSERT THE NAV HERE */}
-        <nav className="neo-nav">
-            <div className="logo-section">
-                <h1 className="logo">NEOCOMMERCE</h1>
-            </div>
-            <div className="nav-info">
-                <span className="node-id">
-                    NODE: {location.lat ? `${location.lat.toFixed(2)}N / ${location.lon.toFixed(2)}E` : "LOCATING..."}
-                </span>
-                <span className="mode-status animate-pulse"> MODE: SYSTEM_ACCESS</span>
-            </div>
-        </nav>
+            <nav className="neo-nav">
+                <div className="logo-section">
+                    <h1 className="logo">NEOCOMMERCE</h1>
+                </div>
+                <div className="nav-info">
+                    <span className="node-id">
+                        NODE: {location.lat ? `${location.lat.toFixed(2)}N / ${location.lon.toFixed(2)}E` : "LOCATING..."}
+                    </span>
+                    <span className="mode-status animate-pulse"> MODE: SYSTEM_ACCESS</span>
+                </div>
+            </nav>
             {/* INTERACTIVE GLOW: Moves with your mouse */}
             <div 
                 className="mouse-glow" 
@@ -136,7 +136,7 @@ if (data.valid) {
                 }}
             ></div>
             <div className="grid-bg"></div> {/* Teammate's Grid */}
-            
+
             {showSuccess && (
                 <div className="success-modal">
                     <div className="success-content">
@@ -147,13 +147,13 @@ if (data.valid) {
                     </div>
                 </div>
             )}
-            
+
             <div className="signup-card animate-reveal">
                 {step === 1 ? (
                     <form onSubmit={handleNext} className="signup-form">
                         <h1 className="gradient-text">Create Account</h1>
                         <p className="subtitle">Enter your credentials to join the elite tier</p>
-                        
+
                         <div className="input-group">
                             <label>Full Name</label>
                             <input type="text" required placeholder="Divya" 
@@ -179,7 +179,7 @@ if (data.valid) {
                     <div className="otp-view">
                         <h1 className="gradient-text">Security Check</h1>
                         <p>We've sent a 6-digit key to +91 {formData.mobile}</p>
-                        
+
                         <div className="otp-inputs">
                             {otp.map((data, index) => (
                                 <input

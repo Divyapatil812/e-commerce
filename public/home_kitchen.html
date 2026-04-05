@@ -222,7 +222,7 @@ function updatePriceLabel() {
 function syncToGlobalCart() {
     let globalCart = JSON.parse(localStorage.getItem('cart')) || [];
     const localActive = registry.filter(p => p.qty > 0).map(p => ({
-        name: p.name, price: p.price, qty: p.qty
+        name: p.name, price: p.price, qty: p.qty, image: p.img
     }));
     const otherCategoryItems = globalCart.filter(gItem => !registry.some(rItem => rItem.name === gItem.name));
     const finalCart = [...otherCategoryItems, ...localActive];
