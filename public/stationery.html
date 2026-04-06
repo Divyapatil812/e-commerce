@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Stationery | Premium Writing Collection</title>
+    <title>Elite Stationery | Fine Writing Instruments & Office Supplies</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
@@ -32,7 +32,10 @@
 <div class="grid-bg"></div>
 
 <nav class="official-nav flex items-center justify-between py-5 px-10 sticky top-0 z-50">
-    <div class="text-3xl font-black italic tracking-tighter" style="background: linear-gradient(to right, #ffffff, #fbbf24); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">ELITE<span class="text-amber-400">STATIONERY</span></div>
+    <div class="flex flex-col">
+        <div class="text-3xl font-black italic tracking-tighter" style="background: linear-gradient(to right, #ffffff, #fbbf24); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">ELITE<span class="text-amber-400">STATIONERY</span></div>
+        <span class="text-[9px] uppercase tracking-[0.3em] text-amber-400/60 font-semibold -mt-1">Fine Writing Instruments &amp; Office Supplies</span>
+    </div>
     <div class="flex gap-8 text-white font-bold text-sm items-center">
         <a href="home.html" class="nav-btn"><i class="fas fa-home mr-2"></i>Home</a>
         <a href="checkout.html" class="nav-btn"><i class="fas fa-shopping-cart mr-2"></i>Checkout</a>
@@ -57,6 +60,9 @@
                     <label class="flex items-center gap-3"><input type="checkbox" value="Notebooks" class="cat-check" onchange="filterProducts()" checked> Notebooks</label>
                     <label class="flex items-center gap-3"><input type="checkbox" value="Art" class="cat-check" onchange="filterProducts()" checked> Art & Craft</label>
                     <label class="flex items-center gap-3"><input type="checkbox" value="Office" class="cat-check" onchange="filterProducts()" checked> Office</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Kids" class="cat-check" onchange="filterProducts()" checked> Kids</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Cases" class="cat-check" onchange="filterProducts()" checked> Cases</label>
+                    <label class="flex items-center gap-3"><input type="checkbox" value="Organization" class="cat-check" onchange="filterProducts()" checked> Organization</label>
                 </div>
             </div>
         </aside>
@@ -80,64 +86,70 @@
 </div>
 
 <script>
+const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6B2nF4DNz";
+
+function getImageUrl(src) {
+    return src.includes('?') ? `${src}&key=${PRODUCT_IMAGE_API_KEY}` : `${src}?key=${PRODUCT_IMAGE_API_KEY}`;
+}
+
 const stationeryProducts = [
   // WRITING
-  { id: 301, name: "Premium Fountain Pen Set", price: 2500, category: "Writing", spec: "German Nib, Luxury", quality: 95, rating: 4.8, reviews: 234, img: "https://m.media-amazon.com/images/I/61FqZVqJ3HL._SL1500_.jpg" },
-  { id: 302, name: "Executive Ballpoint Pens", price: 1800, category: "Writing", spec: "Metal Body, Refillable", quality: 88, rating: 4.6, reviews: 189, img: "https://m.media-amazon.com/images/I/71zK8aYqKJL._SL1500_.jpg" },
-  { id: 303, name: "Gel Pen Collection", price: 850, category: "Writing", spec: "Smooth, 12 Colors", quality: 75, rating: 4.5, reviews: 312, img: "https://m.media-amazon.com/images/I/71pQJ6Z8KPL._SL1500_.jpg" },
-  { id: 304, name: "Highlighter Set", price: 450, category: "Writing", spec: "6 Colors", quality: 65, rating: 4.4, reviews: 156, img: "https://m.media-amazon.com/images/I/71wQ9bK6aYL._SL1500_.jpg" },
-  { id: 305, name: "Permanent Markers Pack", price: 680, category: "Writing", spec: "Quick Dry, Fade Resist", quality: 70, rating: 4.3, reviews: 198, img: "https://m.media-amazon.com/images/I/71Xq8VqM6bL._SL1500_.jpg" },
-  { id: 306, name: "Whiteboard Markers", price: 720, category: "Writing", spec: "Erasable, 8 Colors", quality: 72, rating: 4.4, reviews: 145, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
-  { id: 307, name: "Mechanical Pencils", price: 950, category: "Writing", spec: "0.5mm, Metal Grip", quality: 80, rating: 4.7, reviews: 267, img: "https://m.media-amazon.com/images/I/61vK5zQ8JRL._SL1500_.jpg" },
-  { id: 308, name: "Colored Pencil Set", price: 1200, category: "Writing", spec: "48 Colors, Artist Grade", quality: 85, rating: 4.6, reviews: 223, img: "https://m.media-amazon.com/images/I/81pQ9bK6aYL._SL1500_.jpg" },
-  { id: 309, name: "Calligraphy Pen Set", price: 1500, category: "Writing", spec: "5 Nib Sizes", quality: 90, rating: 4.8, reviews: 178, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
-  
+  { id: 301, name: "Premium Fountain Pen Set", price: 2500, category: "Writing", spec: "German Nib, Luxury", quality: 95, rating: 4.8, reviews: 234, img: "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=500" },
+  { id: 302, name: "Executive Ballpoint Pens", price: 1800, category: "Writing", spec: "Metal Body, Refillable", quality: 88, rating: 4.6, reviews: 189, img: "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=500" },
+  { id: 303, name: "Gel Pen Collection", price: 850, category: "Writing", spec: "Smooth, 12 Colors", quality: 75, rating: 4.5, reviews: 312, img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500" },
+  { id: 304, name: "Highlighter Set", price: 450, category: "Writing", spec: "6 Colors", quality: 65, rating: 4.4, reviews: 156, img: "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=500" },
+  { id: 305, name: "Permanent Markers Pack", price: 680, category: "Writing", spec: "Quick Dry, Fade Resist", quality: 70, rating: 4.3, reviews: 198, img: "https://images.unsplash.com/photo-1596288066287-b5b93717a64e?w=500" },
+  { id: 306, name: "Whiteboard Markers", price: 720, category: "Writing", spec: "Erasable, 8 Colors", quality: 72, rating: 4.4, reviews: 145, img: "https://images.unsplash.com/photo-1589244159943-460088ed5c92?w=500" },
+  { id: 307, name: "Mechanical Pencils", price: 950, category: "Writing", spec: "0.5mm, Metal Grip", quality: 80, rating: 4.7, reviews: 267, img: "https://images.unsplash.com/photo-1585336261022-680e295ce3fe?w=500" },
+  { id: 308, name: "Colored Pencil Set", price: 1200, category: "Writing", spec: "48 Colors, Artist Grade", quality: 85, rating: 4.6, reviews: 223, img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500" },
+  { id: 309, name: "Calligraphy Pen Set", price: 1500, category: "Writing", spec: "5 Nib Sizes", quality: 90, rating: 4.8, reviews: 178, img: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=500" },
+
   // NOTEBOOKS
-  { id: 310, name: "Ruled Notebook A4", price: 280, category: "Notebooks", spec: "200 Pages", quality: 70, rating: 4.5, reviews: 445, img: "https://m.media-amazon.com/images/I/71K8pL5RzXL._SL1500_.jpg" },
-  { id: 311, name: "Leather Journal", price: 2200, category: "Notebooks", spec: "Handcrafted Leather", quality: 95, rating: 4.9, reviews: 156, img: "https://m.media-amazon.com/images/I/81vK5zQ9JRL._SL1500_.jpg" },
-  { id: 312, name: "Bullet Journal Dotted", price: 850, category: "Notebooks", spec: "180gsm Paper", quality: 82, rating: 4.7, reviews: 298, img: "https://m.media-amazon.com/images/I/71pQ9bK6aVL._SL1500_.jpg" },
-  { id: 313, name: "Sketchbook A3", price: 650, category: "Notebooks", spec: "120gsm Paper", quality: 78, rating: 4.6, reviews: 189, img: "https://m.media-amazon.com/images/I/71vK5zQ9JRL._SL1500_.jpg" },
-  { id: 314, name: "Spiral Notebook Pack", price: 550, category: "Notebooks", spec: "Pack of 3", quality: 68, rating: 4.4, reviews: 267, img: "https://m.media-amazon.com/images/I/71pQ9bK7aYL._SL1500_.jpg" },
-  { id: 315, name: "Graph Notebook A4", price: 350, category: "Notebooks", spec: "5mm Grid", quality: 65, rating: 4.3, reviews: 234, img: "https://m.media-amazon.com/images/I/71wQ8VqM7bL._SL1500_.jpg" },
+  { id: 310, name: "Ruled Notebook A4", price: 280, category: "Notebooks", spec: "200 Pages", quality: 70, rating: 4.5, reviews: 445, img: "https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=500" },
+  { id: 311, name: "Leather Journal", price: 2200, category: "Notebooks", spec: "Handcrafted Leather", quality: 95, rating: 4.9, reviews: 156, img: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=500" },
+  { id: 312, name: "Bullet Journal Dotted", price: 850, category: "Notebooks", spec: "180gsm Paper", quality: 82, rating: 4.7, reviews: 298, img: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=500" },
+  { id: 313, name: "Sketchbook A3", price: 650, category: "Notebooks", spec: "120gsm Paper", quality: 78, rating: 4.6, reviews: 189, img: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=500" },
+  { id: 314, name: "Spiral Notebook Pack", price: 550, category: "Notebooks", spec: "Pack of 3", quality: 68, rating: 4.4, reviews: 267, img: "https://images.unsplash.com/photo-1572726729207-a78d6feb18d7?w=500" },
+  { id: 315, name: "Graph Notebook A4", price: 350, category: "Notebooks", spec: "5mm Grid", quality: 65, rating: 4.3, reviews: 234, img: "https://images.unsplash.com/photo-1501618669935-18b6ecb13d6d?w=500" },
 
   // KIDS
-  { id: 316, name: "Character Stickers", price: 320, category: "Kids", spec: "500pcs Assorted", quality: 60, rating: 4.5, reviews: 389, img: "https://m.media-amazon.com/images/I/81vK5zQ8KRL._SL1500_.jpg" },
-  { id: 317, name: "Coloring Book Set", price: 550, category: "Kids", spec: "5 Themes", quality: 70, rating: 4.6, reviews: 312, img: "https://m.media-amazon.com/images/I/81pQ9bK6aYL._SL1500_.jpg" },
-  { id: 318, name: "Wax Crayons 24 Colors", price: 280, category: "Kids", spec: "Non-Toxic", quality: 65, rating: 4.4, reviews: 267, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
-  { id: 319, name: "Oil Pastels 36 Colors", price: 420, category: "Kids", spec: "Washable", quality: 68, rating: 4.5, reviews: 198, img: "https://m.media-amazon.com/images/I/81K8pL6RzXL._SL1500_.jpg" },
-  { id: 320, name: "Kids Activity Book", price: 380, category: "Kids", spec: "Puzzles & Mazes", quality: 62, rating: 4.3, reviews: 156, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
+  { id: 316, name: "Character Stickers", price: 320, category: "Kids", spec: "500pcs Assorted", quality: 60, rating: 4.5, reviews: 389, img: "https://images.unsplash.com/photo-1596568362675-a3e4e87fd421?w=500" },
+  { id: 317, name: "Coloring Book Set", price: 550, category: "Kids", spec: "5 Themes", quality: 70, rating: 4.6, reviews: 312, img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500" },
+  { id: 318, name: "Wax Crayons 24 Colors", price: 280, category: "Kids", spec: "Non-Toxic", quality: 65, rating: 4.4, reviews: 267, img: "https://images.unsplash.com/photo-1560343776-97e7d202ff0e?w=500" },
+  { id: 319, name: "Oil Pastels 36 Colors", price: 420, category: "Kids", spec: "Washable", quality: 68, rating: 4.5, reviews: 198, img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500" },
+  { id: 320, name: "Kids Activity Book", price: 380, category: "Kids", spec: "Puzzles & Mazes", quality: 62, rating: 4.3, reviews: 156, img: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=500" },
 
   // ORGANIZATION
-  { id: 321, name: "File Folders 25pcs", price: 420, category: "Organization", spec: "Manila, Tab Cut", quality: 55, rating: 4.2, reviews: 234, img: "https://m.media-amazon.com/images/I/71vK5zQ8KRL._SL1500_.jpg" },
-  { id: 322, name: "Ring Binders A4", price: 980, category: "Organization", spec: "Pack of 5", quality: 75, rating: 4.5, reviews: 189, img: "https://m.media-amazon.com/images/I/71pQ9bK6bYL._SL1500_.jpg" },
-  { id: 323, name: "Expanding File", price: 750, category: "Organization", spec: "13 Pockets", quality: 70, rating: 4.4, reviews: 167, img: "https://m.media-amazon.com/images/I/71wQ8VqM7bL._SL1500_.jpg" },
-  { id: 324, name: "Sheet Protectors", price: 420, category: "Organization", spec: "100pcs A4", quality: 58, rating: 4.3, reviews: 298, img: "https://m.media-amazon.com/images/I/71K8pL6RzYL._SL1500_.jpg" },
-  { id: 325, name: "Binder Clips Pack", price: 280, category: "Organization", spec: "50 Clips", quality: 52, rating: 4.2, reviews: 445, img: "https://m.media-amazon.com/images/I/71K8pL6RzYL._SL1500_.jpg" },
+  { id: 321, name: "File Folders 25pcs", price: 420, category: "Organization", spec: "Manila, Tab Cut", quality: 55, rating: 4.2, reviews: 234, img: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=500" },
+  { id: 322, name: "Ring Binders A4", price: 980, category: "Organization", spec: "Pack of 5", quality: 75, rating: 4.5, reviews: 189, img: "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=500" },
+  { id: 323, name: "Expanding File", price: 750, category: "Organization", spec: "13 Pockets", quality: 70, rating: 4.4, reviews: 167, img: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=500" },
+  { id: 324, name: "Sheet Protectors", price: 420, category: "Organization", spec: "100pcs A4", quality: 58, rating: 4.3, reviews: 298, img: "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=500" },
+  { id: 325, name: "Binder Clips Pack", price: 280, category: "Organization", spec: "50 Clips", quality: 52, rating: 4.2, reviews: 445, img: "https://images.unsplash.com/photo-1568738351265-c29676a63a0e?w=500" },
 
   // CASES
-  { id: 326, name: "Leather Pencil Case", price: 650, category: "Cases", spec: "Genuine Leather", quality: 85, rating: 4.7, reviews: 178, img: "https://m.media-amazon.com/images/I/71K8pL6RzWL._SL1500_.jpg" },
-  { id: 327, name: "Multi-Layer Box", price: 420, category: "Cases", spec: "3 Compartments", quality: 68, rating: 4.4, reviews: 267, img: "https://m.media-amazon.com/images/I/71wQ8VqM6eL._SL1500_.jpg" },
-  { id: 328, name: "Wooden Desk Organizer", price: 1200, category: "Cases", spec: "Natural Wood", quality: 88, rating: 4.8, reviews: 145, img: "https://m.media-amazon.com/images/I/71wQ8VqM6dL._SL1500_.jpg" },
-  { id: 329, name: "Mesh Organizer Set", price: 980, category: "Cases", spec: "5-Piece Set", quality: 78, rating: 4.6, reviews: 198, img: "https://m.media-amazon.com/images/I/71vK5zQ8JWL._SL1500_.jpg" },
+  { id: 326, name: "Leather Pencil Case", price: 650, category: "Cases", spec: "Genuine Leather", quality: 85, rating: 4.7, reviews: 178, img: "https://images.unsplash.com/photo-1589244159943-460088ed5c92?w=500" },
+  { id: 327, name: "Multi-Layer Box", price: 420, category: "Cases", spec: "3 Compartments", quality: 68, rating: 4.4, reviews: 267, img: "https://images.unsplash.com/photo-1568738351265-c29676a63a0e?w=500" },
+  { id: 328, name: "Wooden Desk Organizer", price: 1200, category: "Cases", spec: "Natural Wood", quality: 88, rating: 4.8, reviews: 145, img: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=500" },
+  { id: 329, name: "Mesh Organizer Set", price: 980, category: "Cases", spec: "5-Piece Set", quality: 78, rating: 4.6, reviews: 198, img: "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=500" },
 
   // OFFICE
-  { id: 330, name: "Standard Stapler", price: 420, category: "Office", spec: "Metal, 20-Sheet", quality: 65, rating: 4.4, reviews: 312, img: "https://m.media-amazon.com/images/I/71K8pL6RzYL._SL1500_.jpg" },
-  { id: 331, name: "Heavy Duty Stapler", price: 850, category: "Office", spec: "100-Sheet Steel", quality: 82, rating: 4.6, reviews: 167, img: "https://m.media-amazon.com/images/I/61vK5zQ8JTL._SL1500_.jpg" },
-  { id: 332, name: "Tape Dispenser", price: 320, category: "Office", spec: "Heavy Base", quality: 58, rating: 4.3, reviews: 289, img: "https://m.media-amazon.com/images/I/71pQ9bK6aZL._SL1500_.jpg" },
-  { id: 333, name: "Washi Tape Pack", price: 550, category: "Office", spec: "10 Decorative Rolls", quality: 70, rating: 4.5, reviews: 234, img: "https://m.media-amazon.com/images/I/81vK5zQ8KRL._SL1500_.jpg" },
-  { id: 334, name: "Sticky Notes Pack", price: 520, category: "Office", spec: "12 Pads Mega pack", quality: 62, rating: 4.4, reviews: 356, img: "https://m.media-amazon.com/images/I/71K8pL6SzXL._SL1500_.jpg" },
-  { id: 335, name: "Executive Planner", price: 1800, category: "Office", spec: "12-Month Daily", quality: 88, rating: 4.7, reviews: 178, img: "https://m.media-amazon.com/images/I/71wQ8VqP6bL._SL1500_.jpg" },
-  { id: 336, name: "Desk Calendar", price: 650, category: "Office", spec: "2026 Flip Design", quality: 68, rating: 4.5, reviews: 198, img: "https://m.media-amazon.com/images/I/71vK5zQ8JWL._SL1500_.jpg" },
+  { id: 330, name: "Standard Stapler", price: 420, category: "Office", spec: "Metal, 20-Sheet", quality: 65, rating: 4.4, reviews: 312, img: "https://images.unsplash.com/photo-1568738351265-c29676a63a0e?w=500" },
+  { id: 331, name: "Heavy Duty Stapler", price: 850, category: "Office", spec: "100-Sheet Steel", quality: 82, rating: 4.6, reviews: 167, img: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=500" },
+  { id: 332, name: "Tape Dispenser", price: 320, category: "Office", spec: "Heavy Base", quality: 58, rating: 4.3, reviews: 289, img: "https://images.unsplash.com/photo-1568738351265-c29676a63a0e?w=500" },
+  { id: 333, name: "Washi Tape Pack", price: 550, category: "Office", spec: "10 Decorative Rolls", quality: 70, rating: 4.5, reviews: 234, img: "https://images.unsplash.com/photo-1596568362675-a3e4e87fd421?w=500" },
+  { id: 334, name: "Sticky Notes Pack", price: 520, category: "Office", spec: "12 Pads Mega pack", quality: 62, rating: 4.4, reviews: 356, img: "https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=500" },
+  { id: 335, name: "Executive Planner", price: 1800, category: "Office", spec: "12-Month Daily", quality: 88, rating: 4.7, reviews: 178, img: "https://images.unsplash.com/photo-1517842645767-c639042777db?w=500" },
+  { id: 336, name: "Desk Calendar", price: 650, category: "Office", spec: "2026 Flip Design", quality: 68, rating: 4.5, reviews: 198, img: "https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=500" },
 
   // ART
-  { id: 337, name: "Watercolor Set", price: 1200, category: "Art", spec: "24 Artist Colors", quality: 85, rating: 4.7, reviews: 189, img: "https://m.media-amazon.com/images/I/81K8pL6RzXL._SL1500_.jpg" },
-  { id: 338, name: "Acrylic Paint Collection", price: 1500, category: "Art", spec: "12 Vibrant Tubes", quality: 88, rating: 4.8, reviews: 156, img: "https://m.media-amazon.com/images/I/81vK5zQ8JRL._SL1500_.jpg" },
-  { id: 339, name: "Paint Brush Set", price: 880, category: "Art", spec: "15 Assorted Brushes", quality: 78, rating: 4.6, reviews: 223, img: "https://m.media-amazon.com/images/I/71pQ9bK6cYL._SL1500_.jpg" },
-  { id: 340, name: "Canvas Sheet Pack", price: 1100, category: "Art", spec: "10 Pre-Primed Sheets", quality: 80, rating: 4.5, reviews: 145, img: "https://m.media-amazon.com/images/I/71wQ8VqM8bL._SL1500_.jpg" },
-  { id: 341, name: "Craft Paper Bundle", price: 580, category: "Art", spec: "50 Assorted Colors", quality: 65, rating: 4.4, reviews: 267, img: "https://m.media-amazon.com/images/I/71vK5zQ9JRL._SL1500_.jpg" },
-  { id: 342, name: "Precision Scissors", price: 950, category: "Art", spec: "Stainless Steel", quality: 75, rating: 4.6, reviews: 198, img: "https://m.media-amazon.com/images/I/71wQ8VqM6cL._SL1500_.jpg" },
-  { id: 343, name: "Glue Stick Pack", price: 420, category: "Art", spec: "Pack of 10", quality: 60, rating: 4.3, reviews: 289, img: "https://m.media-amazon.com/images/I/71vK5zQ8JXL._SL1500_.jpg" },
-  { id: 344, name: "Hot Glue Gun", price: 850, category: "Art", spec: "With 20 Sticks", quality: 72, rating: 4.5, reviews: 178, img: "https://m.media-amazon.com/images/I/71vK5zQ8JWL._SL1500_.jpg" }
+  { id: 337, name: "Watercolor Set", price: 1200, category: "Art", spec: "24 Artist Colors", quality: 85, rating: 4.7, reviews: 189, img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500" },
+  { id: 338, name: "Acrylic Paint Collection", price: 1500, category: "Art", spec: "12 Vibrant Tubes", quality: 88, rating: 4.8, reviews: 156, img: "https://images.unsplash.com/photo-1560343776-97e7d202ff0e?w=500" },
+  { id: 339, name: "Paint Brush Set", price: 880, category: "Art", spec: "15 Assorted Brushes", quality: 78, rating: 4.6, reviews: 223, img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500" },
+  { id: 340, name: "Canvas Sheet Pack", price: 1100, category: "Art", spec: "10 Pre-Primed Sheets", quality: 80, rating: 4.5, reviews: 145, img: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=500" },
+  { id: 341, name: "Craft Paper Bundle", price: 580, category: "Art", spec: "50 Assorted Colors", quality: 65, rating: 4.4, reviews: 267, img: "https://images.unsplash.com/photo-1596568362675-a3e4e87fd421?w=500" },
+  { id: 342, name: "Precision Scissors", price: 950, category: "Art", spec: "Stainless Steel", quality: 75, rating: 4.6, reviews: 198, img: "https://images.unsplash.com/photo-1568738351265-c29676a63a0e?w=500" },
+  { id: 343, name: "Glue Stick Pack", price: 420, category: "Art", spec: "Pack of 10", quality: 60, rating: 4.3, reviews: 289, img: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=500" },
+  { id: 344, name: "Hot Glue Gun", price: 850, category: "Art", spec: "With 20 Sticks", quality: 72, rating: 4.5, reviews: 178, img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500" }
 ].sort((a, b) => a.name.localeCompare(b.name));
 
 let registry = stationeryProducts.map(p => ({ ...p, qty: 0, review: "" }));
@@ -147,7 +159,7 @@ setInterval(updateClock, 1000);
 
 function syncToGlobalCart() {
     let globalCart = JSON.parse(localStorage.getItem('cart')) || [];
-    const localActive = registry.filter(p => p.qty > 0).map(p => ({ name: p.name, price: p.price, qty: p.qty, image: p.img }));
+    const localActive = registry.filter(p => p.qty > 0).map(p => ({ name: p.name, price: p.price, qty: p.qty, image: getImageUrl(p.img) }));
     const otherCategoryItems = globalCart.filter(gItem => !registry.some(rItem => rItem.name === gItem.name));
     const finalCart = [...otherCategoryItems, ...localActive];
     localStorage.setItem('cart', JSON.stringify(finalCart));
@@ -173,7 +185,7 @@ function renderProducts(list = registry) {
     const container = document.getElementById("product-list");
     container.innerHTML = list.map((p) => `
         <div class="marketplace-card">
-            <div class="relative bg-white h-44 flex items-center justify-center p-6"><img src="${p.img}" class="max-h-full transition-transform hover:scale-105"></div>
+            <div class="relative bg-white h-44 flex items-center justify-center p-6"><img src="${getImageUrl(p.img)}" class="max-h-full transition-transform hover:scale-105"></div>
             <div class="p-5 flex-1 bg-black">
                 <span class="text-[9px] font-bold text-amber-400 uppercase">${p.category}</span>
                 <h3 class="text-xs font-bold text-white uppercase truncate">${p.name}</h3>
