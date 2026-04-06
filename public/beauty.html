@@ -195,9 +195,9 @@
         { id: 82, name: "Amika The Kure", price: 2800, category: "Haircare", spec: "Repair Shampoo", performance: 83, rating: 4.5, reviews: 7890, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
         { id: 83, name: "K18 Leave-In", price: 6500, category: "Haircare", spec: "Molecular Repair", performance: 95, rating: 4.9, reviews: 9876, image: "https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=500" },
         { id: 84, name: "T3 AireLuxe Dryer", price: 22500, category: "Tools", spec: "IonAir Pro", performance: 91, rating: 4.6, reviews: 4321, image: "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=500" }
-    ];
+    ].sort((a, b) => a.name.localeCompare(b.name));
 
-    const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6nF4DNz";
+    const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6B2nF4DNz";
 
     function getImageUrl(src) {
         return src.includes('?') ? `${src}&key=${PRODUCT_IMAGE_API_KEY}` : `${src}?key=${PRODUCT_IMAGE_API_KEY}`;

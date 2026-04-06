@@ -278,9 +278,9 @@
         { id: 162, name: "CalDigit TS4 Dock", price: 34999, category: "Accessories", spec: "18 Ports Thunderbolt", performance: 98, rating: 4.5, reviews: 876, image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500" },
         { id: 168, name: "Secretlab Titan Evo", price: 54999, category: "Accessories", spec: "Luxury Gaming Chair", performance: 94, rating: 4.5, reviews: 1876, image: "https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=500" },
         { id: 170, name: "Stream Deck MK.2", price: 14999, category: "Accessories", spec: "15 LCD Keys Pro", performance: 90, rating: 4.4, reviews: 2109, image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=500" }
-    ];
+    ].sort((a, b) => a.name.localeCompare(b.name));
 
-    const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6nF4DNz";
+    const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6B2nF4DNz";
 
     function getImageUrl(src) {
         return src.includes('?') ? `${src}&key=${PRODUCT_IMAGE_API_KEY}` : `${src}?key=${PRODUCT_IMAGE_API_KEY}`;
