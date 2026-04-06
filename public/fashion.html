@@ -100,9 +100,9 @@
         { id: 14, name: "Adidas Yeezy Boost 350", price: 24900, category: "Footwear", spec: "Primeknit, Boost", sizing: true, performance: 60 },
         { id: 19, name: "LV Keepall 55", price: 185000, category: "Bags", spec: "Monogram Canvas", sizing: false, performance: 85 },
         { id: 25, name: "Hermès H Belt 32mm", price: 72000, category: "Accessories", spec: "Reversible Leather", sizing: false, performance: 68 }
-    ];
+    ].sort((a, b) => a.name.localeCompare(b.name));
 
-    const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6nF4DNz";
+    const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6B2nF4DNz";
 
     function getImageUrl(src) {
         return src.includes('?') ? `${src}&key=${PRODUCT_IMAGE_API_KEY}` : `${src}?key=${PRODUCT_IMAGE_API_KEY}`;

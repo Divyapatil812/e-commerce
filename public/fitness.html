@@ -157,7 +157,7 @@ const fitnessProducts = [
   { id: 53, name: "Smart Watch Fitness", price: 8500, category: "Wearables", spec: "GPS, 7-Day Battery", performance: 75, rating: 4.5, reviews: 278, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
   { id: 54, name: "Digital Body Scale", price: 1500, category: "Wearables", spec: "Max 180kg", performance: 35, rating: 4.1, reviews: 167, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
   { id: 55, name: "Smart Composition Scale", price: 3500, category: "Wearables", spec: "BMI & Body Fat", performance: 60, rating: 4.4, reviews: 198, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" }
-];
+].sort((a, b) => a.name.localeCompare(b.name));
 
 let registry = fitnessProducts.map(p => ({ ...p, qty: 0 }));
 

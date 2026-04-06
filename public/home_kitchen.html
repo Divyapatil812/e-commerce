@@ -206,7 +206,7 @@ const products = [
     { id: 53, name: "Rug", price: 2800, category: "Decor", spec: "5x7 ft, Machine Washable", quality: 75, rating: 4.3, reviews: 1876, description: "Modern area rug", img: "https://m.media-amazon.com/images/I/71v9k3Lp6WL._SL1500_.jpg" },
     { id: 54, name: "Coat Rack", price: 1400, category: "Storage", spec: "Free Standing, 8 Hooks", quality: 70, rating: 4.2, reviews: 1543, description: "Entryway coat stand", img: "https://m.media-amazon.com/images/I/61x7p2Lm5JL._SL1500_.jpg" },
     { id: 55, name: "Shoe Rack", price: 1800, category: "Storage", spec: "4 Tier, Bamboo", quality: 72, rating: 4.3, reviews: 2109, description: "Wooden shoe organizer", img: "https://m.media-amazon.com/images/I/71y6k3Lp9QL._SL1500_.jpg" }
-];
+].sort((a, b) => a.name.localeCompare(b.name));
 
 let registry = products.map(p => ({ ...p, qty: 0, review: "" }));
 

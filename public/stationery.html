@@ -138,7 +138,7 @@ const stationeryProducts = [
   { id: 342, name: "Precision Scissors", price: 950, category: "Art", spec: "Stainless Steel", quality: 75, rating: 4.6, reviews: 198, img: "https://m.media-amazon.com/images/I/71wQ8VqM6cL._SL1500_.jpg" },
   { id: 343, name: "Glue Stick Pack", price: 420, category: "Art", spec: "Pack of 10", quality: 60, rating: 4.3, reviews: 289, img: "https://m.media-amazon.com/images/I/71vK5zQ8JXL._SL1500_.jpg" },
   { id: 344, name: "Hot Glue Gun", price: 850, category: "Art", spec: "With 20 Sticks", quality: 72, rating: 4.5, reviews: 178, img: "https://m.media-amazon.com/images/I/71vK5zQ8JWL._SL1500_.jpg" }
-];
+].sort((a, b) => a.name.localeCompare(b.name));
 
 let registry = stationeryProducts.map(p => ({ ...p, qty: 0, review: "" }));
 
