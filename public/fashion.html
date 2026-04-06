@@ -90,22 +90,22 @@
 
 <script>
     const products = [
-        { id: 0, name: "Rolex GMT-Master II 'Pepsi'", price: 1250000, category: "Watches", spec: "Oystersteel, Jubilee", sizing: false, performance: 95 },
-        { id: 1, name: "Patek Philippe Aquanaut", price: 1450000, category: "Watches", spec: "Self-winding, Tropical", sizing: false, performance: 98 },
-        { id: 4, name: "Audemars Piguet Royal Oak", price: 1850000, category: "Watches", spec: "Octagonal Bezel", sizing: false, performance: 99 },
-        { id: 5, name: "Gucci Technical Jacket", price: 125000, category: "Apparel", spec: "Jersey, Web Trim", sizing: true, performance: 75 },
-        { id: 6, name: "Supreme Box Logo Hoodie", price: 65000, category: "Apparel", spec: "Heavyweight Fleece", sizing: true, performance: 68 },
-        { id: 8, name: "Balenciaga Speed Trainer", price: 72000, category: "Apparel", spec: "Technical 3D Knit", sizing: true, performance: 70 },
-        { id: 13, name: "Nike Air Jordan 1 Retro", price: 18500, category: "Footwear", spec: "Premium Leather", sizing: true, performance: 55 },
-        { id: 14, name: "Adidas Yeezy Boost 350", price: 24900, category: "Footwear", spec: "Primeknit, Boost", sizing: true, performance: 60 },
-        { id: 19, name: "LV Keepall 55", price: 185000, category: "Bags", spec: "Monogram Canvas", sizing: false, performance: 85 },
-        { id: 25, name: "Hermès H Belt 32mm", price: 72000, category: "Accessories", spec: "Reversible Leather", sizing: false, performance: 68 }
+        { id: 0, name: "Rolex GMT-Master II 'Pepsi'", price: 1250000, category: "Watches", spec: "Oystersteel, Jubilee", sizing: false, performance: 95, img: "0.jpg" },
+        { id: 1, name: "Patek Philippe Aquanaut", price: 1450000, category: "Watches", spec: "Self-winding, Tropical", sizing: false, performance: 98, img: "1.jpg" },
+        { id: 4, name: "Audemars Piguet Royal Oak", price: 1850000, category: "Watches", spec: "Octagonal Bezel", sizing: false, performance: 99, img: "4.jpg" },
+        { id: 5, name: "Gucci Technical Jacket", price: 125000, category: "Apparel", spec: "Jersey, Web Trim", sizing: true, performance: 75, img: "5.jpg" },
+        { id: 6, name: "Supreme Box Logo Hoodie", price: 65000, category: "Apparel", spec: "Heavyweight Fleece", sizing: true, performance: 68, img: "6.jpg" },
+        { id: 8, name: "Balenciaga Speed Trainer", price: 72000, category: "Apparel", spec: "Technical 3D Knit", sizing: true, performance: 70, img: "8.jpg" },
+        { id: 13, name: "Nike Air Jordan 1 Retro", price: 18500, category: "Footwear", spec: "Premium Leather", sizing: true, performance: 55, img: "13.jpg" },
+        { id: 14, name: "Adidas Yeezy Boost 350", price: 24900, category: "Footwear", spec: "Primeknit, Boost", sizing: true, performance: 60, img: "14.jpg" },
+        { id: 19, name: "LV Keepall 55", price: 185000, category: "Bags", spec: "Monogram Canvas", sizing: false, performance: 85, img: "19.jpg" },
+        { id: 25, name: "Hermès H Belt 32mm", price: 72000, category: "Accessories", spec: "Reversible Leather", sizing: false, performance: 68, img: "25.jpg" }
     ];
 
-    const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6nF4DNz";
+const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6B2nF4DNz";
 
-    function getImageUrl(src) {
-        return src.includes('?') ? `${src}&key=${PRODUCT_IMAGE_API_KEY}` : `${src}?key=${PRODUCT_IMAGE_API_KEY}`;
+function getImageUrl(img) {
+        return `https://fakestoreapi.com/img/${img}?apiKey=${PRODUCT_IMAGE_API_KEY}`;
     }
 
     let registry = products.map(p => ({ ...p, qty: 0, selectedSize: "M" }));

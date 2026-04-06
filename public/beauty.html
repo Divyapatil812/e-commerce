@@ -197,10 +197,10 @@
         { id: 84, name: "T3 AireLuxe Dryer", price: 22500, category: "Tools", spec: "IonAir Pro", performance: 91, rating: 4.6, reviews: 4321, image: "https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=500" }
     ];
 
-    const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6nF4DNz";
+const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6B2nF4DNz";
 
-    function getImageUrl(src) {
-        return src.includes('?') ? `${src}&key=${PRODUCT_IMAGE_API_KEY}` : `${src}?key=${PRODUCT_IMAGE_API_KEY}`;
+function getImageUrl(img) {
+        return `https://fakestoreapi.com/img/${img}?apiKey=${PRODUCT_IMAGE_API_KEY}`;
     }
 
     let registry = products.map(p => ({ ...p, qty: 0, review: "" }));

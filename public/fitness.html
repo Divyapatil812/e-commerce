@@ -90,73 +90,79 @@
 </div>
 
 <script>
+const PRODUCT_IMAGE_API_KEY = "X03vqUGn2lqSvhcK0VLVuh4bIm3L7nD6vhIDQlHQUUpm58G6B2nF4DNz";
+
+function getImageUrl(img) {
+  return `https://fakestoreapi.com/img/${img}?apiKey=${PRODUCT_IMAGE_API_KEY}`;
+}
+
 const fitnessProducts = [
   // CARDIO
-  { id: 1, name: "Treadmill Motorized 2.5HP", price: 35000, category: "Cardio", spec: "2.5HP Motor, 12km/h", performance: 85, rating: 4.5, reviews: 234, img: "https://m.media-amazon.com/images/I/71Qy8VqM6bL._SL1500_.jpg" },
-  { id: 2, name: "Exercise Bike Stationary", price: 12500, category: "Cardio", spec: "Magnetic Resistance", performance: 70, rating: 4.3, reviews: 156, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
-  { id: 3, name: "Elliptical Cross Trainer", price: 28000, category: "Cardio", spec: "20kg Flywheel", performance: 90, rating: 4.6, reviews: 189, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
-  { id: 4, name: "Rowing Machine Foldable", price: 18500, category: "Cardio", spec: "Hydraulic Resistance", performance: 75, rating: 4.4, reviews: 142, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
-  { id: 5, name: "Spin Bike Pro Series", price: 22000, category: "Cardio", spec: "25kg Flywheel", performance: 88, rating: 4.7, reviews: 203, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
-  { id: 6, name: "Air Bike HIIT", price: 19500, category: "Cardio", spec: "Air Resistance", performance: 82, rating: 4.5, reviews: 167, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
-  { id: 7, name: "Manual Treadmill Curved", price: 15000, category: "Cardio", spec: "Self-Powered", performance: 78, rating: 4.2, reviews: 98, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
-  { id: 8, name: "Stair Climber Machine", price: 32000, category: "Cardio", spec: "10 Resistance Levels", performance: 85, rating: 4.6, reviews: 145, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
+  { id: 1, name: "Treadmill Motorized 2.5HP", price: 35000, category: "Cardio", spec: "2.5HP Motor, 12km/h", performance: 85, rating: 4.5, reviews: 234, img: "1.jpg" },
+  { id: 2, name: "Exercise Bike Stationary", price: 12500, category: "Cardio", spec: "Magnetic Resistance", performance: 70, rating: 4.3, reviews: 156, img: "2.jpg" },
+{ id: 3, name: "Elliptical Cross Trainer", price: 28000, category: "Cardio", spec: "20kg Flywheel", performance: 90, rating: 4.6, reviews: 189, img: "3.jpg" },
+  { id: 4, name: "Rowing Machine Foldable", price: 18500, category: "Cardio", spec: "Hydraulic Resistance", performance: 75, rating: 4.4, reviews: 142, img: "4.jpg" },
+  { id: 5, name: "Spin Bike Pro Series", price: 22000, category: "Cardio", spec: "25kg Flywheel", performance: 88, rating: 4.7, reviews: 203, img: "5.jpg" },
+  { id: 6, name: "Air Bike HIIT", price: 19500, category: "Cardio", spec: "Air Resistance", performance: 82, rating: 4.5, reviews: 167, img: "6.jpg" },
+  { id: 7, name: "Manual Treadmill Curved", price: 15000, category: "Cardio", spec: "Self-Powered", performance: 78, rating: 4.2, reviews: 98, img: "7.jpg" },
+  { id: 8, name: "Stair Climber Machine", price: 32000, category: "Cardio", spec: "10 Resistance Levels", performance: 85, rating: 4.6, reviews: 145, img: "8.jpg" },
   
   // STRENGTH
-  { id: 9, name: "Adjustable Dumbbell 24kg", price: 8500, category: "Strength", spec: "Quick Weight Select", performance: 70, rating: 4.5, reviews: 289, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
-  { id: 10, name: "Hex Dumbbells - 5kg Pair", price: 1800, category: "Strength", spec: "Rubber Coated", performance: 45, rating: 4.3, reviews: 167, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
-  { id: 11, name: "Rubber Dumbbells - 10kg Pair", price: 3200, category: "Strength", spec: "Ergonomic Grip", performance: 55, rating: 4.4, reviews: 198, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
-  { id: 12, name: "Kettlebell Set 8-16kg", price: 5500, category: "Strength", spec: "Vinyl Coated", performance: 65, rating: 4.6, reviews: 234, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
-  { id: 13, name: "Competition Kettlebell 20kg", price: 3800, category: "Strength", spec: "Steel Pro Grade", performance: 60, rating: 4.7, reviews: 156, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
-  { id: 14, name: "Barbell Set 50kg", price: 12000, category: "Strength", spec: "Olympic Size", performance: 80, rating: 4.5, reviews: 278, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
-  { id: 15, name: "Olympic Barbell 20kg", price: 6500, category: "Strength", spec: "28mm Grip", performance: 75, rating: 4.6, reviews: 189, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
-  { id: 16, name: "Weight Plates Set 20kg", price: 4500, category: "Strength", spec: "Cast Iron", performance: 60, rating: 4.3, reviews: 145, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
-  { id: 17, name: "Bumper Plates Rubber 20kg", price: 6800, category: "Strength", spec: "Olympic Lift Grade", performance: 70, rating: 4.5, reviews: 167, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
-  { id: 18, name: "Power Rack Squat Cage", price: 28000, category: "Strength", spec: "Heavy Duty Steel", performance: 95, rating: 4.8, reviews: 234, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
-  { id: 19, name: "Adjustable Bench Press", price: 12500, category: "Strength", spec: "Multi-Position", performance: 85, rating: 4.6, reviews: 198, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
-  { id: 20, name: "Flat Weight Bench", price: 6500, category: "Strength", spec: "400kg Capacity", performance: 75, rating: 4.4, reviews: 156, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
-  { id: 21, name: "Pull Up Bar Doorway", price: 1200, category: "Strength", spec: "Multi-Grip", performance: 50, rating: 4.2, reviews: 234, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
-  { id: 22, name: "Dip Station Bars", price: 5500, category: "Strength", spec: "Steel Construction", performance: 70, rating: 4.5, reviews: 145, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
-  { id: 23, name: "Home Gym Multi Station", price: 45000, category: "Strength", spec: "100kg Weight Stack", performance: 90, rating: 4.7, reviews: 189, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
-  { id: 24, name: "Smith Machine Pro", price: 55000, category: "Strength", spec: "Guided Barbell", performance: 95, rating: 4.8, reviews: 167, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
+  { id: 9, name: "Adjustable Dumbbell 24kg", price: 8500, category: "Strength", spec: "Quick Weight Select", performance: 70, rating: 4.5, reviews: 289, img: "9.jpg" },
+  { id: 10, name: "Hex Dumbbells - 5kg Pair", price: 1800, category: "Strength", spec: "Rubber Coated", performance: 45, rating: 4.3, reviews: 167, img: "10.jpg" },
+  { id: 11, name: "Rubber Dumbbells - 10kg Pair", price: 3200, category: "Strength", spec: "Ergonomic Grip", performance: 55, rating: 4.4, reviews: 198, img: "11.jpg" },
+  { id: 12, name: "Kettlebell Set 8-16kg", price: 5500, category: "Strength", spec: "Vinyl Coated", performance: 65, rating: 4.6, reviews: 234, img: "12.jpg" },
+  { id: 13, name: "Competition Kettlebell 20kg", price: 3800, category: "Strength", spec: "Steel Pro Grade", performance: 60, rating: 4.7, reviews: 156, img: "13.jpg" },
+  { id: 14, name: "Barbell Set 50kg", price: 12000, category: "Strength", spec: "Olympic Size", performance: 80, rating: 4.5, reviews: 278, img: "14.jpg" },
+  { id: 15, name: "Olympic Barbell 20kg", price: 6500, category: "Strength", spec: "28mm Grip", performance: 75, rating: 4.6, reviews: 189, img: "15.jpg" },
+  { id: 16, name: "Weight Plates Set 20kg", price: 4500, category: "Strength", spec: "Cast Iron", performance: 60, rating: 4.3, reviews: 145, img: "16.jpg" },
+  { id: 17, name: "Bumper Plates Rubber 20kg", price: 6800, category: "Strength", spec: "Olympic Lift Grade", performance: 70, rating: 4.5, reviews: 167, img: "17.jpg" },
+  { id: 18, name: "Power Rack Squat Cage", price: 28000, category: "Strength", spec: "Heavy Duty Steel", performance: 95, rating: 4.8, reviews: 234, img: "18.jpg" },
+  { id: 19, name: "Adjustable Bench Press", price: 12500, category: "Strength", spec: "Multi-Position", performance: 85, rating: 4.6, reviews: 198, img: "19.jpg" },
+  { id: 20, name: "Flat Weight Bench", price: 6500, category: "Strength", spec: "400kg Capacity", performance: 75, rating: 4.4, reviews: 156, img: "20.jpg" },
+  { id: 21, name: "Pull Up Bar Doorway", price: 1200, category: "Strength", spec: "Multi-Grip", performance: 50, rating: 4.2, reviews: 234, img: "21.jpg" },
+  { id: 22, name: "Dip Station Bars", price: 5500, category: "Strength", spec: "Steel Construction", performance: 70, rating: 4.5, reviews: 145, img: "22.jpg" },
+  { id: 23, name: "Home Gym Multi Station", price: 45000, category: "Strength", spec: "100kg Weight Stack", performance: 90, rating: 4.7, reviews: 189, img: "23.jpg" },
+  { id: 24, name: "Smith Machine Pro", price: 55000, category: "Strength", spec: "Guided Barbell", performance: 95, rating: 4.8, reviews: 167, img: "24.jpg" },
 
   // ACCESSORIES
-  { id: 25, name: "Resistance Bands Set", price: 1200, category: "Accessories", spec: "Set of 5", performance: 40, rating: 4.2, reviews: 145, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
-  { id: 26, name: "Loop Resistance Bands", price: 850, category: "Accessories", spec: "Fabric Loop", performance: 35, rating: 4.1, reviews: 98, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
-  { id: 27, name: "Fabric Resistance Bands", price: 1500, category: "Accessories", spec: "Non-Slip", performance: 45, rating: 4.3, reviews: 123, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
-  { id: 28, name: "Power Resistance 150lbs", price: 1800, category: "Accessories", spec: "Heavy Duty", performance: 50, rating: 4.4, reviews: 167, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
-  { id: 29, name: "Suspension Trainer", price: 2500, category: "Accessories", spec: "Adjustable Straps", performance: 65, rating: 4.6, reviews: 189, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
-  { id: 30, name: "Battle Rope 15m", price: 3500, category: "Accessories", spec: "Heavy Duty", performance: 70, rating: 4.5, reviews: 145, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
-  { id: 31, name: "Medicine Ball 5kg", price: 1800, category: "Accessories", spec: "Rubber Construction", performance: 45, rating: 4.3, reviews: 98, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
-  { id: 32, name: "Slam Ball 10kg", price: 2200, category: "Accessories", spec: "No Bounce", performance: 55, rating: 4.4, reviews: 123, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
-  { id: 33, name: "Wall Ball 9kg", price: 2500, category: "Accessories", spec: "Soft Shell", performance: 50, rating: 4.3, reviews: 89, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
-  { id: 34, name: "Sandbag Adjustable 25kg", price: 3200, category: "Accessories", spec: "25kg Max", performance: 60, rating: 4.5, reviews: 134, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
+  { id: 25, name: "Resistance Bands Set", price: 1200, category: "Accessories", spec: "Set of 5", performance: 40, rating: 4.2, reviews: 145, img: "25.jpg" },
+  { id: 26, name: "Loop Resistance Bands", price: 850, category: "Accessories", spec: "Fabric Loop", performance: 35, rating: 4.1, reviews: 98, img: "26.jpg" },
+  { id: 27, name: "Fabric Resistance Bands", price: 1500, category: "Accessories", spec: "Non-Slip", performance: 45, rating: 4.3, reviews: 123, img: "27.jpg" },
+  { id: 28, name: "Power Resistance 150lbs", price: 1800, category: "Accessories", spec: "Heavy Duty", performance: 50, rating: 4.4, reviews: 167, img: "28.jpg" },
+  { id: 29, name: "Suspension Trainer", price: 2500, category: "Accessories", spec: "Adjustable Straps", performance: 65, rating: 4.6, reviews: 189, img: "29.jpg" },
+  { id: 30, name: "Battle Rope 15m", price: 3500, category: "Accessories", spec: "Heavy Duty", performance: 70, rating: 4.5, reviews: 145, img: "30.jpg" },
+  { id: 31, name: "Medicine Ball 5kg", price: 1800, category: "Accessories", spec: "Rubber Construction", performance: 45, rating: 4.3, reviews: 98, img: "31.jpg" },
+  { id: 32, name: "Slam Ball 10kg", price: 2200, category: "Accessories", spec: "No Bounce", performance: 55, rating: 4.4, reviews: 123, img: "32.jpg" },
+  { id: 33, name: "Wall Ball 9kg", price: 2500, category: "Accessories", spec: "Soft Shell", performance: 50, rating: 4.3, reviews: 89, img: "33.jpg" },
+  { id: 34, name: "Sandbag Adjustable 25kg", price: 3200, category: "Accessories", spec: "25kg Max", performance: 60, rating: 4.5, reviews: 134, img: "34.jpg" },
 
   // YOGA
-  { id: 35, name: "Yoga Mat Premium 6mm", price: 1200, category: "Yoga", spec: "Non-Slip", performance: 40, rating: 4.4, reviews: 234, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
-  { id: 36, name: "TPE Yoga Mat Eco", price: 1500, category: "Yoga", spec: "TPE Material", performance: 45, rating: 4.5, reviews: 189, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
-  { id: 37, name: "Cork Yoga Mat", price: 2800, category: "Yoga", spec: "Natural Anti-Microbial", performance: 55, rating: 4.6, reviews: 156, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
-  { id: 38, name: "Yoga Mat Bag", price: 650, category: "Yoga", spec: "Adjustable Strap", performance: 25, rating: 4.2, reviews: 98, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
-  { id: 39, name: "Yoga Block Set", price: 850, category: "Yoga", spec: "EVA Foam", performance: 30, rating: 4.3, reviews: 123, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
-  { id: 40, name: "Yoga Strap Cotton", price: 420, category: "Yoga", spec: "8ft Length", performance: 20, rating: 4.1, reviews: 67, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
-  { id: 41, name: "Yoga Wheel", price: 1800, category: "Yoga", spec: "Back Stretch", performance: 50, rating: 4.4, reviews: 145, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
-  { id: 42, name: "Yoga Bolster Cushion", price: 2200, category: "Yoga", spec: "Firm Support", performance: 45, rating: 4.5, reviews: 89, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
-  { id: 43, name: "Meditation Zafu", price: 1500, category: "Yoga", spec: "Buckwheat Fill", performance: 35, rating: 4.3, reviews: 78, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
-  { id: 44, name: "Pilates Ring", price: 950, category: "Yoga", spec: "Resistance", performance: 30, rating: 4.2, reviews: 89, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
-  { id: 45, name: "Pilates Ball 65cm", price: 1200, category: "Yoga", spec: "Anti-Burst", performance: 35, rating: 4.3, reviews: 112, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
+  { id: 35, name: "Yoga Mat Premium 6mm", price: 1200, category: "Yoga", spec: "Non-Slip", performance: 40, rating: 4.4, reviews: 234, img: "35.jpg" },
+  { id: 36, name: "TPE Yoga Mat Eco", price: 1500, category: "Yoga", spec: "TPE Material", performance: 45, rating: 4.5, reviews: 189, img: "36.jpg" },
+  { id: 37, name: "Cork Yoga Mat", price: 2800, category: "Yoga", spec: "Natural Anti-Microbial", performance: 55, rating: 4.6, reviews: 156, img: "37.jpg" },
+  { id: 38, name: "Yoga Mat Bag", price: 650, category: "Yoga", spec: "Adjustable Strap", performance: 25, rating: 4.2, reviews: 98, img: "38.jpg" },
+  { id: 39, name: "Yoga Block Set", price: 850, category: "Yoga", spec: "EVA Foam", performance: 30, rating: 4.3, reviews: 123, img: "39.jpg" },
+  { id: 40, name: "Yoga Strap Cotton", price: 420, category: "Yoga", spec: "8ft Length", performance: 20, rating: 4.1, reviews: 67, img: "40.jpg" },
+  { id: 41, name: "Yoga Wheel", price: 1800, category: "Yoga", spec: "Back Stretch", performance: 50, rating: 4.4, reviews: 145, img: "41.jpg" },
+  { id: 42, name: "Yoga Bolster Cushion", price: 2200, category: "Yoga", spec: "Firm Support", performance: 45, rating: 4.5, reviews: 89, img: "42.jpg" },
+  { id: 43, name: "Meditation Zafu", price: 1500, category: "Yoga", spec: "Buckwheat Fill", performance: 35, rating: 4.3, reviews: 78, img: "43.jpg" },
+  { id: 44, name: "Pilates Ring", price: 950, category: "Yoga", spec: "Resistance", performance: 30, rating: 4.2, reviews: 89, img: "44.jpg" },
+  { id: 45, name: "Pilates Ball 65cm", price: 1200, category: "Yoga", spec: "Anti-Burst", performance: 35, rating: 4.3, reviews: 112, img: "45.jpg" },
 
   // RECOVERY
-  { id: 46, name: "Foam Roller Recovery", price: 1500, category: "Recovery", spec: "High-Density", performance: 40, rating: 4.4, reviews: 167, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
-  { id: 47, name: "Massage Roller Stick", price: 850, category: "Recovery", spec: "Targeted Relief", performance: 35, rating: 4.2, reviews: 98, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
-  { id: 48, name: "Massage Gun 6 Speed", price: 4500, category: "Recovery", spec: "Deep Tissue", performance: 65, rating: 4.5, reviews: 234, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
-  { id: 49, name: "Percussion Massager", price: 6500, category: "Recovery", spec: "20 Speeds, LCD", performance: 70, rating: 4.6, reviews: 189, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
-  { id: 50, name: "Vibrating Foam Roller", price: 3500, category: "Recovery", spec: "Rechargeable", performance: 55, rating: 4.4, reviews: 145, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
+  { id: 46, name: "Foam Roller Recovery", price: 1500, category: "Recovery", spec: "High-Density", performance: 40, rating: 4.4, reviews: 167, img: "46.jpg" },
+  { id: 47, name: "Massage Roller Stick", price: 850, category: "Recovery", spec: "Targeted Relief", performance: 35, rating: 4.2, reviews: 98, img: "47.jpg" },
+  { id: 48, name: "Massage Gun 6 Speed", price: 4500, category: "Recovery", spec: "Deep Tissue", performance: 65, rating: 4.5, reviews: 234, img: "48.jpg" },
+  { id: 49, name: "Percussion Massager", price: 6500, category: "Recovery", spec: "20 Speeds, LCD", performance: 70, rating: 4.6, reviews: 189, img: "49.jpg" },
+  { id: 50, name: "Vibrating Foam Roller", price: 3500, category: "Recovery", spec: "Rechargeable", performance: 55, rating: 4.4, reviews: 145, img: "50.jpg" },
 
   // WEARABLES
-  { id: 51, name: "Fitness Smart Band", price: 2500, category: "Wearables", spec: "Heart Rate Monitor", performance: 50, rating: 4.2, reviews: 234, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" },
-  { id: 52, name: "HRM Chest Strap", price: 3200, category: "Wearables", spec: "Bluetooth Pro", performance: 55, rating: 4.3, reviews: 189, img: "https://m.media-amazon.com/images/I/71pQ9bK6aYL._SL1500_.jpg" },
-  { id: 53, name: "Smart Watch Fitness", price: 8500, category: "Wearables", spec: "GPS, 7-Day Battery", performance: 75, rating: 4.5, reviews: 278, img: "https://m.media-amazon.com/images/I/71wQ8VqM6bL._SL1500_.jpg" },
-  { id: 54, name: "Digital Body Scale", price: 1500, category: "Wearables", spec: "Max 180kg", performance: 35, rating: 4.1, reviews: 167, img: "https://m.media-amazon.com/images/I/71K8pL6RzXL._SL1500_.jpg" },
-  { id: 55, name: "Smart Composition Scale", price: 3500, category: "Wearables", spec: "BMI & Body Fat", performance: 60, rating: 4.4, reviews: 198, img: "https://m.media-amazon.com/images/I/71vK5zQ8JRL._SL1500_.jpg" }
+  { id: 51, name: "Fitness Smart Band", price: 2500, category: "Wearables", spec: "Heart Rate Monitor", performance: 50, rating: 4.2, reviews: 234, img: "51.jpg" },
+  { id: 52, name: "HRM Chest Strap", price: 3200, category: "Wearables", spec: "Bluetooth Pro", performance: 55, rating: 4.3, reviews: 189, img: "52.jpg" },
+  { id: 53, name: "Smart Watch Fitness", price: 8500, category: "Wearables", spec: "GPS, 7-Day Battery", performance: 75, rating: 4.5, reviews: 278, img: "53.jpg" },
+  { id: 54, name: "Digital Body Scale", price: 1500, category: "Wearables", spec: "Max 180kg", performance: 35, rating: 4.1, reviews: 167, img: "54.jpg" },
+  { id: 55, name: "Smart Composition Scale", price: 3500, category: "Wearables", spec: "BMI & Body Fat", performance: 60, rating: 4.4, reviews: 198, img: "55.jpg" }
 ];
 
 let registry = fitnessProducts.map(p => ({ ...p, qty: 0 }));
